@@ -1,10 +1,9 @@
 # Chapter 3 — Solving Problems by Searching
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
-**Section 3.1 · Problem-Solving Agents** — covered in Week 2 (Friday lecture). Textbook pp. 82–86.
-**Section 3.3 · Search Algorithms** — covered in Week 2. Textbook pp. 89–94.
+**Sections:** 3.1 Problem-Solving Agents (pp. 82–86) · 3.3 Search Algorithms (pp. 89–94).
 
-Chapter 2 asked *what makes an agent rational*; Chapter 3 answers a more concrete question: what does the agent actually **do** when no single action is obviously right? It looks ahead and tries to find a *sequence* of actions that leads to a goal — that process is called **search**. This file covers §3.1 (the problem-solving framework) and §3.3 (the general search-algorithm machinery); later sections (§3.2 example problems, §3.4 uninformed search, §3.5 informed search / A*) will be added here as they are covered in class.
+When no single action is obviously right, an agent looks ahead for a *sequence* of actions that leads to a goal — **search**.
 
 ---
 
@@ -14,10 +13,10 @@ Chapter 2 asked *what makes an agent rational*; Chapter 3 answers a more concret
 >
 > **Definition (Search).** The computational process a problem-solving agent undertakes to find such a sequence is called *search*.
 
-Two framing notes from the chapter introduction:
+Two framing points:
 
-- Problem-solving agents use **atomic representations** (§2.4.7): states of the world are treated as wholes, with no internal structure visible to the search algorithms. Agents that use factored/structured state descriptions instead are *planning agents* (Chapters 7 and 11).
-- This chapter deliberately starts in the simplest possible environments: **episodic, single agent, fully observable, deterministic, static, discrete, and known** — exactly the properties catalogued in §2.3. Chapter 4 relaxes those constraints; Chapter 6 adds multiple agents.
+- Problem-solving agents use **atomic representations** (§2.4.7): states are treated as wholes with no internal structure visible to search. Agents using factored/structured state descriptions instead are *planning agents* (Chapters 7, 11).
+- The chapter starts in the simplest environments: **episodic, single agent, fully observable, deterministic, static, discrete, known** (§2.3); later chapters relax these constraints.
 
 The running example for the whole chapter: an agent on a touring vacation in Romania is currently in **Arad** and has a nonrefundable ticket out of **Bucharest** the next day. Street signs show three roads leaving Arad — toward Sibiu, Timișoara, or Zerind — none of which is the goal. With no map (an *unknown* environment), the agent can do no better than pick randomly; with a map (Figure 3.1, a simplified road map with distances in miles), it has real information to search over.
 
@@ -68,7 +67,7 @@ $$
 \text{RESULT}(\text{Arad},\ ToZerind) = Zerind
 $$
 
-**Paths and solutions.** A sequence of actions forms a **path**; a **solution** is a path from the initial state to a goal state. Action costs are assumed **additive**: the total cost of a path is the sum of its individual action costs. An **optimal solution** has the lowest path cost among all solutions. This chapter assumes all action costs are positive (footnote 3: with a net-negative-cost cycle, the "cost-optimal" solution would be to loop around it forever; zero-cost actions are fine if consecutive ones are bounded).
+**Paths and solutions.** A sequence of actions forms a **path**; a **solution** is a path from the initial state to a goal state. Action costs are assumed **additive**: the total cost of a path is the sum of its individual action costs. An **optimal solution** has the lowest path cost among all solutions. This chapter assumes all action costs are positive — with a net-negative-cost cycle, looping it forever would be "cost-optimal"; zero-cost actions are allowed as long as no path contains unboundedly many of them.
 
 **Graph view.** The state space can be represented as a **graph**: vertices are states, directed edges are actions. Figure 3.1's Romania map *is* such a graph — each road indicates two actions, one in each direction.
 
@@ -85,7 +84,7 @@ The Bucharest formulation is a **model** — an abstract mathematical descriptio
 - **Valid** if any abstract solution can be *elaborated* into a solution in the more detailed world. A sufficient condition: for every detailed state that is "in Arad," there is a detailed path to some state that is "in Sibiu," and so on.
 - **Useful** if carrying out each action of the abstract solution is easier than the original problem — "drive from Arad to Sibiu" needs no further search or planning by an average driver.
 
-So: remove as much detail as possible while retaining validity and keeping abstract actions easy to carry out. The book's closing line for the section: were it not for the ability to construct useful abstractions, intelligent agents would be completely swamped by the real world.
+So: remove as much detail as possible while retaining validity and keeping abstract actions easy to carry out — without useful abstraction, agents are swamped by the real world's detail.
 
 ---
 
@@ -141,7 +140,7 @@ Key behaviors:
 
 - Each iteration pops the frontier node with minimum $f(n)$; if its state is a goal, return it — a **late goal test**, checked when a node is *expanded*, not when it is generated.
 - A child enters the frontier if its state has never been reached before, or if it is now being reached by a path cheaper than any previous one (the `reached` table keeps only the best path to each state).
-- Different choices of $f(n)$ give different specific algorithms — that is how this chapter organizes itself: breadth-first, uniform-cost, depth-first, greedy best-first, and A* are all instances of best-first search with a particular evaluation function.
+- Different choices of $f(n)$ give different specific algorithms: breadth-first, uniform-cost, depth-first, greedy best-first, and A* are all best-first search with a particular evaluation function.
 
 ### 5.2 §3.3.2 — Search Data Structures
 
