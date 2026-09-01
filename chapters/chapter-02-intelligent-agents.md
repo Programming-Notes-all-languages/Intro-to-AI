@@ -254,11 +254,3 @@ If the agent can randomize, escape from infinite loops becomes possible: on `[Cl
 | **Deterministic / nondeterministic** | next state completely determined by current state + action / not; *stochastic* = probabilities explicit, *nondeterministic* = possibilities unquantified |
 | **Discrete / continuous** | finite distinct states, percepts, actions vs. smoothly varying values — applies to state, time, percepts, and actions |
 | **Simple reflex agent** | acts on the current percept only via condition–action rules; works only in fully observable worlds (infinite loops otherwise); randomization is a partial fix |
-
----
-
-## Where This Goes Next
-
-- **§2.2 Good Behavior: The Concept of Rationality** — performance measures, what "rational" means, omniscience vs. rationality, learning and autonomy.
-- **Rest of §2.3** — PEAS descriptions; the remaining properties (episodic/sequential, static/dynamic, known/unknown); completing Figure 2.6's table with those columns.
-- **§2.4 The Structure of Agents (continued)** — model-based reflex agents (§2.4.3), goal-based and utility-based agents, learning agents (§2.4.6), component representations (§2.4.7).

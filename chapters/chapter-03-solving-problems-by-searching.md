@@ -230,11 +230,3 @@ In *infinite* state spaces more care is needed. An algorithm that repeatedly app
 | **Redundant path / cycle** | worse way to reach the same state / loopy path; 20 states → infinite tree |
 | Four performance criteria | completeness, cost optimality, time complexity, space complexity |
 | $d$, $m$, $b$ | depth of optimal solution, max path length, branching factor (implicit state spaces) |
-
----
-
-## Where This Goes Next
-
-- **§3.2 Example Problems** — grid worlds (the vacuum world reformulated with 8 states), the 8-puzzle, the traveling-salesman problem; standardized vs. real-world problems.
-- **§3.4 Uninformed Search Strategies** — breadth-first, depth-first, uniform-cost, iterative deepening; no estimate of goal distance available.
-- **§3.5 Informed (Heuristic) Search Strategies** — greedy best-first and A* search using heuristics like straight-line distance to Bucharest (the Week 2 focus).
