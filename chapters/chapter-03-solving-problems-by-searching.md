@@ -2,8 +2,9 @@
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
 **Section 3.1 · Problem-Solving Agents** — covered in Week 2 (Friday lecture). Textbook pp. 82–86.
+**Section 3.3 · Search Algorithms** — covered in Week 2. Textbook pp. 89–94.
 
-Chapter 2 asked *what makes an agent rational*; Chapter 3 answers a more concrete question: what does the agent actually **do** when no single action is obviously right? It looks ahead and tries to find a *sequence* of actions that leads to a goal — that process is called **search**. This file covers §3.1 (the problem-solving framework); later sections (§3.2 example problems, §3.4 uninformed search, §3.5 informed search / A*) will be added here as they are covered in class.
+Chapter 2 asked *what makes an agent rational*; Chapter 3 answers a more concrete question: what does the agent actually **do** when no single action is obviously right? It looks ahead and tries to find a *sequence* of actions that leads to a goal — that process is called **search**. This file covers §3.1 (the problem-solving framework) and §3.3 (the general search-algorithm machinery); later sections (§3.2 example problems, §3.4 uninformed search, §3.5 informed search / A*) will be added here as they are covered in class.
 
 ---
 
@@ -88,7 +89,119 @@ So: remove as much detail as possible while retaining validity and keeping abstr
 
 ---
 
-## 5. Check Your Understanding
+## 5. §3.3 — Search Algorithms
+
+> **Definition (Search algorithm).** A search algorithm takes a search problem as input and returns either a solution or an indication of failure.
+
+The algorithms in this chapter superimpose a **search tree** over the state-space graph, forming paths from the initial state until one reaches a goal:
+
+- Each node in the search tree corresponds to a *state*; each edge corresponds to an *action*; the root is the initial state (Arad).
+- **State space vs. search tree.** The state space describes the (possibly infinite) set of states and the transitions between them. The search tree describes *paths* between those states: it may contain several nodes for one state (one per path), but each node has exactly one unique path back to the root — as in any tree.
+
+**Worked example — Figure 3.4.** Three partial search trees for Arad → Bucharest:
+
+1. Expand the root Arad using $\text{ACTIONS}(\text{Arad})$ and $\text{RESULT}$, generating three children — Sibiu, Timișoara, Zerind — all on the frontier (green in the figure).
+2. Choose one child to expand next. This is "the essence of search—following up one option now and putting the others aside for later."
+3. Expand Sibiu: its successors are generated as new nodes, leaving 6 unexpanded nodes on the frontier. One of them is Arad again (Arad → Sibiu → Arad) — a cycle; since it can't be part of an optimal path, search should not continue from there.
+
+**Frontier and separation property.** The **frontier** is the set of nodes (and their states) that have been reached but not yet expanded. A state is said to be **reached** as soon as a node has been generated for it, whether or not that node has been expanded. The frontier separates two regions of the state-space graph: an **interior** where every state has been expanded and an **exterior** of states not yet reached (Figure 3.6).
+
+> Some authors call the frontier the *open list* and the set of previously expanded nodes the *closed list*; in this book's terminology, closed = reached minus frontier.
+
+### 5.1 §3.3.1 — Best-First Search
+
+> **Definition (Best-first search).** A general approach to choosing which node on the frontier to expand next: pick the node $n$ with minimum value of some evaluation function $f(n)$.
+
+The algorithm (Figure 3.7):
+
+```text
+function BEST-FIRST-SEARCH(problem, f) returns a solution node or failure
+    node ← NODE(STATE = problem.INITIAL)
+    frontier ← priority queue ordered by f, containing node
+    reached ← lookup table with one entry: problem.INITIAL → node
+    while not IS-EMPTY(frontier) do
+        node ← POP(frontier)
+        if problem.IS-GOAL(node.STATE) then return node
+        for each child in EXPAND(problem, node) do
+            s ← child.STATE
+            if s is not in reached or child.PATH-COST < reached[s].PATH-COST then
+                reached[s] ← child
+                add child to frontier
+    return failure
+
+function EXPAND(problem, node) yields nodes
+    s ← node.STATE
+    for each action in problem.ACTIONS(s) do
+        s′ ← RESULT(s, action)
+        cost ← node.PATH-COST + ACTION-COST(s, action, s′)
+        yield NODE(STATE = s′, PARENT = node, ACTION = action, PATH-COST = cost)
+```
+
+Key behaviors:
+
+- Each iteration pops the frontier node with minimum $f(n)$; if its state is a goal, return it — a **late goal test**, checked when a node is *expanded*, not when it is generated.
+- A child enters the frontier if its state has never been reached before, or if it is now being reached by a path cheaper than any previous one (the `reached` table keeps only the best path to each state).
+- Different choices of $f(n)$ give different specific algorithms — that is how this chapter organizes itself: breadth-first, uniform-cost, depth-first, greedy best-first, and A* are all instances of best-first search with a particular evaluation function.
+
+### 5.2 §3.3.2 — Search Data Structures
+
+A node is a data structure with four components:
+
+- `node.STATE` — the state to which the node corresponds;
+- `node.PARENT` — the node in the tree that generated this node;
+- `node.ACTION` — the action applied to the parent's state to generate this node;
+- `node.PATH-COST` — total cost of the path from the initial state to this node (written $g(\text{node})$ in mathematical formulas).
+
+Following PARENT pointers back from a goal node recovers the states and actions along the solution.
+
+The frontier is stored as some kind of **queue**, because its operations are: IS-EMPTY, POP (remove and return the top node), TOP (peek without removing), and ADD (insert into its proper place). Three kinds of queues appear in this chapter:
+
+| Queue | Pops first… | Used by |
+|---|---|---|
+| Priority queue | node with minimum $f(n)$ | best-first search |
+| FIFO queue | oldest added node | breadth-first search (§3.4) |
+| LIFO queue (stack) | most recently added node | depth-first search (§3.4) |
+
+Reached states are stored in a **lookup table** (e.g., a hash table): key = state, value = the best node for that state.
+
+### 5.3 §3.3.3 — Redundant Paths
+
+> **Definition (Repeated state / cycle).** A state appearing more than once on a path is a *repeated state*; a loopy path containing one is called a *cycle*. Romania has only 20 states, yet its complete search tree is infinite because there is no limit to how often one can traverse a loop.
+
+A **redundant path** is any worse way of reaching the same state — cycles are just a special case. Example: Sibiu via Arad–Sibiu (140 miles) versus Arad–Zerind–Oradea–Sibiu (297 miles); the second need not be considered in the quest for optimal paths.
+
+**Why it matters — 10×10 grid.** An agent that can move to any of 8 adjacent squares reaches every square in 9 moves or fewer, but there are almost $8^9$ paths of length 9 (over 100 million) — the average cell is reachable by over a million redundant paths. Eliminating redundancy completes the search roughly a million times faster:
+
+> "Algorithms that cannot remember the past are doomed to repeat it."
+
+Three approaches:
+
+1. **Remember all reached states** (what best-first search does): detect every redundant path and keep only the best one per state. Preferred when there is much redundancy and the table fits in memory.
+2. **Don't track at all**: some formulations rarely or never reach the same state twice — e.g., assembly problems where each action adds a part and ordering constraints (A before B, but not B before A) make revisits impossible. Skipping the reached table saves memory. An algorithm that checks for redundant paths is a **graph search**; one that does not is a **tree-like search**. BEST-FIRST-SEARCH as written is a graph search; removing all references to `reached` gives a tree-like version — less memory, but it examines redundant paths and runs slower.
+3. **Compromise — check for cycles only**: each node has a chain of parent pointers, so cycles can be detected with no extra memory by walking up the chain looking for an earlier occurrence of the state. Some implementations walk all the way to the root (eliminating every cycle); others check just a few links (parent, grandparent, great-grandparent) — constant time, eliminating short cycles and relying on other mechanisms for long ones.
+
+### 5.4 §3.3.4 — Measuring Problem-Solving Performance
+
+Four criteria for comparing search algorithms:
+
+- **Completeness** — is the algorithm guaranteed to find a solution when one exists, and to correctly report failure when there isn't?
+- **Cost optimality** — does it find the lowest-cost solution among all solutions? (Some authors call this *admissibility* or just *optimality*.)
+- **Time complexity** — how long until a solution is found; measured in seconds, or more abstractly by the number of states and actions considered.
+- **Space complexity** — how much memory the search needs.
+
+**Completeness, finite vs. infinite.** With a single goal that could be anywhere, a complete algorithm must systematically explore every state reachable from the initial state. In *finite* state spaces this is straightforward: track paths and cut off cycles (Arad → Sibiu → Arad), and eventually every reachable state will have been reached.
+
+In *infinite* state spaces more care is needed. An algorithm that repeatedly applies "factorial" in Knuth's 4 problem follows the infinite path $4 \to 4! \to (4!)! \to \cdots$; on an obstacle-free infinite grid, moving straight forward forever also traces a path of new states only. Neither ever revisits a state, yet both are incomplete because wide expanses of the state space are never reached. A complete algorithm must be **systematic** — e.g., on the infinite grid, spiral out: cover all cells $s$ steps from the origin before moving to cells $s+1$ steps away. And in an infinite state space with no solution, a sound algorithm has to search forever — it can't terminate because it can't know whether the next state will be a goal.
+
+**Complexity measures.** For explicit graphs (like Romania's map), complexity is measured against graph size $|V| + |E|$ ($|V|$ = number of states, $|E|$ = number of distinct state/action pairs). Most AI problems have only an *implicit* state space (initial state + actions + transition model), so complexity is expressed in terms of:
+
+- $d$ — depth of the optimal solution (number of actions);
+- $m$ — maximum number of actions in any path;
+- $b$ — branching factor (number of successors to consider per node).
+
+---
+
+## 6. Check Your Understanding
 
 1. Why does *goal formulation* come before *problem formulation*? What goes wrong if an agent formulates a problem without first limiting its objectives?
 2. In the Romania example, why can the agent ignore percepts while executing the solution (open-loop)? Name one real-world event that would make closed-loop execution necessary.
@@ -96,6 +209,12 @@ So: remove as much detail as possible while retaining validity and keeping abstr
 4. Why does this chapter assume all action costs are positive? What happens to "optimal" if a negative-cost cycle exists?
 5. Give an example of a goal defined by a *property* rather than a single state, and explain how IS-GOAL handles it.
 6. An abstraction is valid but not useful — what does that mean concretely, and why would you still reject the formulation?
+7. Why can one state correspond to several nodes in a search tree? What is unique about each node's relationship to the root?
+8. In BEST-FIRST-SEARCH, why is a child re-added to the frontier when its state was already reached but with a higher path cost? What would go wrong if that check were skipped?
+9. Match each queue type — priority queue, FIFO queue, LIFO stack — to the search algorithm that uses it (from §3.4).
+10. Romania has 20 states, yet its complete search tree is infinite. Explain why, and distinguish a cycle from a redundant path in general.
+11. When would you choose a tree-like over a graph search even though it examines redundant paths? Give the book's example of a problem where revisits are rare or impossible.
+12. Why does repeatedly applying factorial make an algorithm incomplete on Knuth's 4 problem, and what property does a spiral traversal of the infinite grid have instead?
 
 ---
 
@@ -117,12 +236,22 @@ So: remove as much detail as possible while retaining validity and keeping abstr
 | **State-space graph** | vertices = states, directed edges = actions (the Romania map is one) |
 | **Abstraction** | removing detail; valid if elaborable into detailed solutions, useful if abstract actions are easier to execute |
 | Open-loop / closed-loop | ignore percepts while executing fixed plan / monitor percepts and adapt |
+| **Search tree** | superimposed over the state-space graph; nodes ↔ states, edges ↔ actions, root = initial state; several nodes per state possible, each node has a unique path back to the root |
+| Expand / generate | apply ACTIONS + RESULT to a node → child (successor) nodes with PARENT pointers |
+| **Frontier** | reached but not yet expanded (a.k.a. open list); separates interior from exterior |
+| **Reached** | states that have a generated node, whether or not it has been expanded |
+| **Best-first search** | expand the frontier node with minimum $f(n)$; different $f$ → different algorithms |
+| Node structure | STATE, PARENT, ACTION, PATH-COST ($g(\text{node})$) |
+| Frontier queues | priority queue (best-first), FIFO (BFS), LIFO/stack (DFS) |
+| **Graph search / tree-like** | checks for redundant paths via a reached table / does not check (less memory, slower) |
+| **Redundant path / cycle** | worse way to reach the same state / loopy path; 20 states → infinite tree |
+| Four performance criteria | completeness, cost optimality, time complexity, space complexity |
+| $d$, $m$, $b$ | depth of optimal solution, max path length, branching factor (implicit state spaces) |
 
 ---
 
 ## Where This Goes Next
 
 - **§3.2 Example Problems** — grid worlds (the vacuum world reformulated with 8 states), the 8-puzzle, the traveling-salesman problem; standardized vs. real-world problems.
-- **§3.3 Search Algorithms** — the general search framework: expanding nodes, frontier, and how to evaluate algorithms (completeness, optimality, time/space complexity).
 - **§3.4 Uninformed Search Strategies** — breadth-first, depth-first, uniform-cost, iterative deepening; no estimate of goal distance available.
 - **§3.5 Informed (Heuristic) Search Strategies** — greedy best-first and A* search using heuristics like straight-line distance to Bucharest (the Week 2 focus).
