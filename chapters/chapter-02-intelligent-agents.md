@@ -237,20 +237,6 @@ If the agent can randomize, escape from infinite loops becomes possible: on `[Cl
 
 ---
 
-## 8. Check Your Understanding
-
-1. Identify the sensors and actuators of a software agent you use daily (e.g., an email client or a web browser).
-2. Why is the full agent-function table infinite in general? What single restriction would make it finite?
-3. In the vacuum world, why does `[A, Clean], [A, Clean]` get the same action as `[A, Clean]` alone? What does that tell you about what this particular agent uses to decide?
-4. Why do we bother distinguishing *agent function* from *agent program*? Give one reason the distinction matters when designing an AI system.
-5. Is a calculator an "agent" under the definition in §1.1? If so, why is that analysis not useful?
-6. A vacuum agent with only a local dirt sensor lives in a partially observable environment — explain why, and state what it would take for the environment to be *effectively* fully observable instead.
-7. Give the book's precise distinction between *stochastic* and *nondeterministic*, using its two rain examples. Why does the distinction matter?
-8. Why is chess discrete while taxi driving is continuous? Name the three things (state, time, percepts/actions) to which the discrete/continuous distinction applies.
-9. A simple reflex vacuum agent loses its location sensor and keeps only a dirt sensor. Walk through why it can loop forever, explain how randomization helps, and say why that fix is only partial.
-
----
-
 ## Quick Reference
 
 | Term | Meaning |

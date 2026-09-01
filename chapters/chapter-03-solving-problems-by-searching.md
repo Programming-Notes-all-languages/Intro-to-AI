@@ -201,23 +201,6 @@ In *infinite* state spaces more care is needed. An algorithm that repeatedly app
 
 ---
 
-## 6. Check Your Understanding
-
-1. Why does *goal formulation* come before *problem formulation*? What goes wrong if an agent formulates a problem without first limiting its objectives?
-2. In the Romania example, why can the agent ignore percepts while executing the solution (open-loop)? Name one real-world event that would make closed-loop execution necessary.
-3. Write out $\text{ACTIONS}(\text{Sibiu})$ and $\text{RESULT}(\text{Sibiu},\ ToArad)$ for the Romania map.
-4. Why does this chapter assume all action costs are positive? What happens to "optimal" if a negative-cost cycle exists?
-5. Give an example of a goal defined by a *property* rather than a single state, and explain how IS-GOAL handles it.
-6. An abstraction is valid but not useful — what does that mean concretely, and why would you still reject the formulation?
-7. Why can one state correspond to several nodes in a search tree? What is unique about each node's relationship to the root?
-8. In BEST-FIRST-SEARCH, why is a child re-added to the frontier when its state was already reached but with a higher path cost? What would go wrong if that check were skipped?
-9. Match each queue type — priority queue, FIFO queue, LIFO stack — to the search algorithm that uses it (from §3.4).
-10. Romania has 20 states, yet its complete search tree is infinite. Explain why, and distinguish a cycle from a redundant path in general.
-11. When would you choose a tree-like over a graph search even though it examines redundant paths? Give the book's example of a problem where revisits are rare or impossible.
-12. Why does repeatedly applying factorial make an algorithm incomplete on Knuth's 4 problem, and what property does a spiral traversal of the infinite grid have instead?
-
----
-
 ## Quick Reference
 
 | Term | Meaning |
