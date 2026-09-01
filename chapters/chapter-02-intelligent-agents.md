@@ -1,9 +1,9 @@
 # Chapter 2 — Intelligent Agents
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
-**Sections covered so far:** §2.1 Agents and Environments (pp. 54–56), §2.3 Properties of Task Environments (pp. 60–65), §2.4.2 Simple Reflex Agents (pp. 67–69) — all from Week 1 (Friday lecture).
+**Sections:** 2.1 Agents and Environments (pp. 54–56) · 2.3 Properties of Task Environments (pp. 60–65) · 2.4.2 Simple Reflex Agents (pp. 67–69).
 
-Chapter 1 introduced the idea that AI is about building *rational agents* — systems that behave as well as possible. Chapter 2 makes this concrete: what an agent is, what environments look like, and how the two are coupled together. Sections 1–5 below cover §2.1; the environment-property material (§2.3) and simple-reflex-agents material (§2.4.2) that also came up in Week 1 follow as sections 6–7. The remaining pieces — §2.2 rationality, the rest of §2.3 (PEAS + episodic/sequential, static/dynamic, known/unknown), and the other agent architectures in §2.4 — will be added here as they are covered in class.
+Chapter 1 introduced AI as building *rational agents* — systems that behave as well as possible; this chapter makes it concrete: what an agent is, what environments look like, and how the two couple together.
 
 ---
 
@@ -13,7 +13,7 @@ Chapter 1 introduced the idea that AI is about building *rational agents* — sy
 
 > **Definition (Agent).** An *agent* is anything that can be viewed as perceiving its environment through sensors and acting upon that environment through actuators.
 
-Intuition: an agent is anything that *senses* something and then *does* something in response. The definition is deliberately broad — it covers humans, robots, and software alike, so the same design principles apply to all of them (Figure 2.1).
+The definition is deliberately broad — it covers humans, robots, and software alike, so the same design principles apply to all (Figure 2.1).
 
 The four building blocks:
 
@@ -26,7 +26,7 @@ The four building blocks:
 
 ### 1.2 Examples: Humans, Robots, Software
 
-The book's three canonical examples — notice how "sensors" and "actuators" change meaning across them:
+Three canonical examples — note how "sensors" and "actuators" shift meaning across them:
 
 | Agent | Sensors | Actuators |
 |---|---|---|
@@ -34,7 +34,7 @@ The book's three canonical examples — notice how "sensors" and "actuators" cha
 | **Robot** | cameras, infrared range finders | various motors |
 | **Software agent** | file contents, network packets, human input (keyboard / mouse / touchscreen / voice) | writing files, sending network packets, displaying information, generating sounds |
 
-A software agent is just as much an "agent" in this sense as a person: it perceives (reads files, receives packets, gets user input) and acts (writes files, sends packets, displays output). This framing is what lets us apply one set of design principles to all three.
+A software agent is just as much an "agent": it perceives (reads files, receives packets, gets user input) and acts (writes files, sends packets, displays output), so one set of design principles applies to all three.
 
 ### 1.3 What Counts as the Environment?
 
@@ -50,14 +50,14 @@ The environment *could* be everything — the entire universe. In practice it is
 >
 > **Definition (Percept sequence).** An agent's *percept sequence* is the complete history of everything the agent has ever perceived.
 
-The key principle behind all of AI in this book:
+The key principle:
 
 > An agent's choice of action at any instant can depend on its **built-in knowledge** and on the **entire percept sequence observed to date**, but **not on anything it hasn't perceived**.
 
-Two consequences worth internalizing:
+Consequences:
 
 1. The full history matters, not just "right now." A good decision may require remembering what happened earlier (e.g., where you last saw dirt).
-2. No action can be based on hidden information. If the agent cannot perceive something, a sound design will never pretend to know it — uncertainty has to be handled explicitly (that becomes §2.3's "partially observable" environments and later chapters' probability machinery).
+2. No action can be based on hidden information. If the agent cannot perceive something, a sound design will never pretend to know it — uncertainty must be handled explicitly (§2.3 partially observable environments; later probability machinery).
 
 ---
 
@@ -67,7 +67,7 @@ Two consequences worth internalizing:
 >
 > **Definition (Agent program).** The *agent program* is a concrete implementation of the agent function, running within some physical system. It is the *internal* side: actual code on an actual machine.
 
-**Why two terms?** Because they are genuinely different things:
+**Why two terms?** They are genuinely different things:
 
 | | Agent function | Agent program |
 |---|---|---|
@@ -75,15 +75,15 @@ Two consequences worth internalizing:
 | Viewpoint | external — "what does the agent do?" | internal — "how does it compute that?" |
 | Size | infinite table for most agents | finite code |
 
-**Tabulating the function.** In principle, given an agent to experiment with, we could build its full table by trying out every possible percept sequence and recording which action it takes. For real agents this table is enormous — **infinite unless we bound the length of percept sequences** we consider. (If the agent randomizes its actions, each sequence would have to be tried many times to estimate the probability of each action; acting randomly turns out to be very intelligent in some settings, as we'll see later.)
+**Tabulating the function.** In principle, given an agent to experiment with, we could build its full table by trying out every possible percept sequence and recording which action it takes. For real agents this table is enormous — **infinite unless we bound the length of percept sequences** we consider. (If the agent randomizes its actions, each sequence must be tried many times to estimate the probability of each action — and acting randomly can itself be rational in some settings.)
 
-The practical upshot: no one builds agents by filling in an infinite table. The job of AI is to write a *smallish program* that produces rational behavior — which is exactly what the rest of the book is about.
+The practical upshot: no one builds agents by filling in an infinite table. The job of AI is to write a *smallish program* that produces rational behavior.
 
 ---
 
 ## 4. Worked Example — The Vacuum-Cleaner World
 
-The running example of this chapter (and much of the course) is a robotic vacuum cleaner in a world of squares, each either **clean** or **dirty**. Figure 2.2 uses just two squares, A and B; the agent starts in square A.
+The running example is a robotic vacuum cleaner in a world of squares, each either **clean** or **dirty**. Figure 2.2 uses just two squares, A and B; the agent starts in square A.
 
 ### 4.1 Specifying the World
 
@@ -91,9 +91,7 @@ The running example of this chapter (and much of the course) is a robotic vacuum
 - **Actions:** move right, move left, suck (clean the current square), do nothing.
 - **States of the world:** location × dirt = $\lbrace A, B \rbrace \times \lbrace Clean, Dirty \rbrace$ — four possible state combinations.
 
-(That's a Cartesian product in the COT 4210 sense: every ordered pair with one choice from each set.)
-
-> Footnote detail worth remembering: a real robot would not have actions like "move right" — it would have things like "spin wheels forward." The book picks page-friendly actions, not implementation-realistic ones.
+A real robot's actions would be things like "spin wheels forward," not "move right"; the vacuum world uses page-friendly actions, not implementation-realistic ones.
 
 ### 4.2 A Simple Agent Function
 
@@ -113,15 +111,15 @@ A partial tabulation of this agent function (Figure 2.3):
 
 **Observation.** Look at the last two rows: the action for `[A, Clean], [A, Clean]` is the same as for `[A, Clean]` alone. In fact, this agent's action depends only on the *last* percept — it ignores all earlier history (and its built-in knowledge). That's why the table keeps repeating itself. Agents that decide purely from the current percept are called **simple reflex agents** (§2.4.2); they work well in fully observable worlds but can get stuck in infinite loops otherwise.
 
-### 4.3 The Question This Section Leaves Open
+### 4.3 What Makes One Agent Better Than Another?
 
-Different vacuum-world agents are defined simply by filling in the right-hand column of that table differently. So: *what is the right way to fill out the table?* What makes an agent good or bad, intelligent or stupid? §2.2 answers with **rationality**.
+Different vacuum-world agents differ only in how the right-hand column of that table is filled in — what makes one better than another is answered by **rationality** (§2.2).
 
 ---
 
 ## 5. "Agent" Is a Tool for Analysis, Not a Boundary
 
-Before closing the section, the book emphasizes that the notion of an agent is meant to be a *tool for analyzing systems*, not an absolute line dividing the world into agents and non-agents:
+The notion of an agent is a *tool for analyzing systems*, not an absolute line dividing the world into agents and non-agents:
 
 - You *could* view a hand-held calculator as an agent that chooses the action "display 4" when given the percept sequence "2 + 2 =" — but such an analysis would hardly aid our understanding of the calculator.
 - In a sense, all engineering designs artifacts that interact with the world. AI operates at (the authors consider) the most interesting end of the spectrum: where the artifact has **significant computational resources** and the task environment requires **nontrivial decision making**.
@@ -130,7 +128,7 @@ Before closing the section, the book emphasizes that the notion of an agent is m
 
 ## 6. Properties of Task Environments (§2.3)
 
-The book's framing: a **task environment** is the "problem" to which rational agents are the "solutions," and its nature *directly determines* the appropriate agent design — so classifying an environment along a few dimensions tells you which techniques will apply. The four properties below were covered in Week 1; the rest of §2.3 (PEAS descriptions, episodic/sequential, static/dynamic, known/unknown) comes later.
+A **task environment** is the "problem" to which rational agents are the "solutions," and its nature *directly determines* the appropriate agent design — classifying an environment along a few dimensions tells you which techniques apply. The remaining §2.3 properties (PEAS, episodic/sequential, static/dynamic, known/unknown) follow in later sections.
 
 ### 6.1 Fully Observable vs. Partially Observable
 
@@ -159,7 +157,7 @@ Design consequences: communication often emerges as rational behavior in multiag
 > **Definition.** An environment is **deterministic** if the next state is *completely determined* by the current state and the action executed; otherwise it is **nondeterministic**.
 
 - In a fully observable, deterministic environment an agent need not worry about uncertainty. But in a partially observable one, hidden aspects make the world *appear* nondeterministic — and most real situations are too complex to track all unobserved aspects, so they must be treated as nondeterministic for practical purposes (taxi driving: traffic is unpredictable, tires blow out, engines seize).
-- The vacuum world as described in §4 of this file is deterministic; variations can add randomly appearing dirt or an unreliable suction mechanism.
+- The vacuum world (§4) is deterministic; variations can add randomly appearing dirt or an unreliable suction mechanism.
 
 **Terminology trap — stochastic ≠ nondeterministic.** Some authors use "stochastic" as a synonym for "nondeterministic," but the book draws a line:
 
@@ -178,7 +176,7 @@ Design consequences: communication often emerges as rational behavior in multiag
 
 ### 6.5 The Property Table (Figure 2.6)
 
-The book's worked classification of familiar environments — the four Week-1 columns are shown; the remaining three properties will be added when §2.3 continues:
+Worked classification of familiar environments (Figure 2.6), first four properties:
 
 | Task environment | Observable | Agents | Deterministic | Discrete |
 |---|---|---|---|---|
@@ -193,13 +191,13 @@ The book's worked classification of familiar environments — the four Week-1 co
 | Refinery controller | Partially | Single | Stochastic | Continuous |
 | English tutor | Partially | Multi | Stochastic | Discrete |
 
-Notes on the table: properties are *not always cut and dried* — medical diagnosis is listed single-agent because a disease process isn't profitably modeled as an agent, but recalcitrant patients could make it multiagent. The "known/unknown" column is deliberately omitted from Figure 2.6 because that distinction is about the *agent's knowledge of the environment's laws*, not strictly a property of the environment itself (it will be covered with the rest of §2.3).
+Properties are *not always cut and dried* — medical diagnosis is listed single-agent because a disease process isn't profitably modeled as an agent, but recalcitrant patients could make it multiagent. Figure 2.6 omits "known/unknown" because that distinction concerns the *agent's knowledge of the environment's laws*, not strictly a property of the environment itself.
 
 ---
 
 ## 7. Simple Reflex Agents (§2.4.2)
 
-§2.1 left open *how* an agent program implements its function; §2.4 starts answering that, and the first architecture is the simplest one. (The book's four basic kinds: simple reflex, model-based reflex, goal-based, utility-based — plus learning agents in §2.4.6.)
+How does an agent program implement its function? The four basic architectures are simple reflex, model-based reflex, goal-based, and utility-based (§2.4), plus learning agents (§2.4.6). The first is the simplest:
 
 > **Definition (Simple reflex agent).** An agent that selects actions on the basis of the **current percept only**, ignoring the rest of the percept history.
 
@@ -233,7 +231,7 @@ A simple reflex agent works **only if the correct decision can be made from the 
 
 ### 7.4 Randomization as a Partial Fix
 
-If the agent can randomize, escape from infinite loops becomes possible: on `[Clean]`, flip a coin between Left and Right — it reaches the other square in an average of two steps, then cleans it if dirty. So a *randomized* simple reflex agent can outperform a deterministic one here. But note the limits (echoing §6.2): randomization is usually **not** rational in single-agent environments — it's a useful trick for simple reflex agents, and more sophisticated deterministic designs do much better. The proper fix for partial observability is an **internal state** that tracks what can't be seen now — which is exactly the *model-based* reflex agent (§2.4.3), coming next.
+If the agent can randomize, escape from infinite loops becomes possible: on `[Clean]`, flip a coin between Left and Right — it reaches the other square in an average of two steps, then cleans it if dirty. So a *randomized* simple reflex agent can outperform a deterministic one here. But randomization is usually **not** rational in single-agent environments — it's a useful trick for simple reflex agents, and more sophisticated deterministic designs do much better. The proper fix for partial observability is an **internal state** that tracks what can't be seen now — the *model-based* reflex agent (§2.4.3).
 
 ---
 
