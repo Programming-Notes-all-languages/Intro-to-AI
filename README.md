@@ -11,7 +11,7 @@ Textbook: *Artificial Intelligence: A Modern Approach* (4th ed.), Russell & Norv
 |---:|---|---|
 | 1 | Introduction: history, state of the art, risks & benefits | — |
 | 2 | Intelligent agents: environments, rationality, agent types | [Chapter 2](chapters/chapter-02-intelligent-agents.md) (§2.1 + §2.3 properties + §2.4.2 · Week 1) |
-| 3 | Solving problems by searching: uninformed/informed search, heuristics | [Chapter 3](chapters/chapter-03-solving-problems-by-searching.md) (§3.1 + §3.3 · Week 2) |
+| 3 | Solving problems by searching: uninformed/informed search, heuristics | [Chapter 3](chapters/chapter-03-solving-problems-by-searching.md) (§3.1 + §3.3–§3.5 · Weeks 2–3) |
 | 4 | Search in complex environments: local search, continuous spaces | — |
 | 5 | Constraint satisfaction: backtracking, propagation | — |
 | 6 | Adversarial search: game theory, alpha-beta pruning, MCTS | — |

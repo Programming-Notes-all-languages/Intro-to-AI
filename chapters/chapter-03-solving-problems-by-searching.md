@@ -200,6 +200,190 @@ In *infinite* state spaces more care is needed. An algorithm that repeatedly app
 
 ---
 
+# Day 2 — Search Algorithms (Lecture)
+
+## 6. Planning Agents and Environment Assumptions
+
+**Planning involves:**
+
+1. decisions based on **hypothesized (modeled) consequences** of actions → a planning agent can't be model-free;
+2. having a **goal to plan for** → it can't be a reflex agent either;
+3. **searching** for a good plan.
+
+For this chapter the lecture restricts attention to environments that are:
+
+- **single-agent**,
+- **fully observable**,
+- **deterministic**,
+- **static** (the world doesn't change while the agent thinks),
+- **discrete**.
+
+(No ghosts, no hidden information.) These assumptions make search well-behaved; relaxing them is what later chapters are about.
+
+## 7. State-Space Sizes: World States vs. Search States
+
+A model is an **abstraction**: a *precise* (not necessarily accurate) description of the real world. Too much detail → the problem becomes too hard to solve; too little detail → it becomes unsolvable. The right level keeps only what the plan depends on.
+
+**Worked example — Pac-Man.** State components: agent position ($120$ squares), food (which $30$ dots remain, i.e. $2^{30}$ configurations), ghost positions ($12^2$ for two ghosts), and facing direction ($4$: N/S/E/W).
+
+| Question | States needed | Count |
+|---|---|---|
+| Full world states? | all components | $120 \cdot 2^{30} \cdot 12^2 \cdot 4 \approx 7.42 \times 10^{13}$ |
+| Pathfinding (get to a goal)? | agent position only | $120$ |
+| Eat all dots? | agent position + food | $120 \cdot 2^{30} \approx 1.29 \times 10^{11}$ |
+
+Two ways to choose the state space:
+
+- **Option 1 — world state:** include every detail of the environment given our model (for pathfinding: current $(x, y)$, actions N/S/E/W, wall locations, goal location; for eat-all-dots: same but with dot locations instead of a goal).
+- **Option 2 — search state:** keep only the planning-specific details. Pathfinding needs just the agent's position; ghosts and facing are irrelevant to *where* it can go.
+
+## 8. State-Space Graphs vs. Search Trees, and the Frontier
+
+**State-space graph.** A complete model of the search problem: nodes = abstracted world configurations (states), arcs = transitions between states (the successor function), goals = a set of nodes (or a goal test). Each state occurs **exactly once**. The full graph is typically too big to build, but it's useful for conceptual understanding and theoretical analysis.
+
+**Search tree.** A branching series of modeled decisions: the start state is the root node, children are successors, plans are top-down paths from root to a goal. Crucially, **states are not unique in a search tree** — the same state can appear under several nodes (once per path that reaches it). So any cycle in the state-space graph makes the search tree infinite:
+
+> How big is the search tree from $S$ when the graph has a cycle? $\infty$. States get repeated.
+
+**How to perform a search.** Maintain the set of most-complete partial plans (tree nodes) — called the **frontier** or **fringe**. Expand out partial plans until a goal is reached. The whole art of search is choosing *which* node to expand next so as to try out as few as possible:
+
+> All the algorithms in this chapter are the same procedure with different expansion strategies.
+
+## 9. Uninformed Search Strategies (§3.4)
+
+An **uninformed** algorithm has no clue how close a state is to the goal — an agent in Arad with no knowledge of Romanian geography can't tell whether Zerind or Sibiu is the better first step. The lecture analyzes each strategy against the four criteria from §3.3.4, for a tree with branching factor $b$ and maximum depth $m$.
+
+### 9.1 Breadth-First Search (BFS)
+
+**Strategy: expand the shallowest node first.** Expand the root, then all its successors, then their successors — level by level. Implemented as best-first search with $f(n)$ = depth of the node; a FIFO queue gives the right order for free (new nodes are always deeper than their parents). Two efficiency tricks from §3.4.1:
+
+- `reached` can be a plain **set** of states, not a state→node map — once BFS reaches a state it can never find a better path to it;
+- an **early goal test**: check IS-GOAL as soon as a node is *generated*, rather than when it's expanded.
+
+BFS always finds a solution with the minimal number of actions: while generating nodes at depth $d$ it has already generated every node at depth $d - 1$, so any shallower solution would have been found first.
+
+| Criterion | Result |
+|---|---|
+| Completeness | **Yes** — systematic; won't get stuck in a cycle like DFS (complete even on infinite state spaces) |
+| Optimality | **Only if all actions cost the same**; with varying costs, no |
+| Time | $O(b^m)$ worst case; $O(b^s)$ if the solution is known to be at depth $s < m$ |
+| Space | $O(b^m)$ — every node of the last tier stays in memory; $O(b^s)$ with a known solution depth |
+
+**Why exponential space hurts.** With $b = 10$, processing 1 million nodes/second, and 1 Kbyte per node: searching to depth $d = 10$ takes under 3 hours but needs **10 terabytes** of memory; at depth $d = 14$ it would take 3.5 years even with infinite memory. Memory is the bigger problem for BFS than time — exponential-complexity search problems can't be solved by uninformed search except in their smallest instances.
+
+### 9.2 Depth-First Search (DFS)
+
+**Strategy: expand the deepest node first.** Dive to the deepest level, then "back up" to the next-deepest node with unexpanded successors. Implemented as a tree-like search using a **stack**, usually *without* a reached table — which is exactly why it's memory-cheap.
+
+| Criterion | Result |
+|---|---|
+| Completeness | **No** — in cyclic state spaces it can loop forever; in infinite spaces it can get stuck on an infinite path even without cycles (incomplete). For finite tree-like state spaces it *is* complete and efficient |
+| Optimality | **No** — returns the first ("leftmost") solution it finds, ignoring action costs entirely |
+| Time | $O(b^m)$ without cycles; unbounded if a cycle exists (might try every path) |
+| Space | $O(b \cdot m)$ — only one expansion per tier is kept in memory at once |
+
+**The two practical problems with DFS and their fixes:**
+
+- **Cycles** → pick a random child instead of always the first, or track visited states;
+- **Revisiting states** → keep a table of visited (reached) states and ignore them.
+
+### 9.3 Iterative Deepening
+
+Use DFS but set a **maximum depth**, then repeat with an increasing limit — "the best of BFS & DFS": BFS's completeness and shallow-solution-first ordering, at DFS's memory cost. The depth limit needs an upper bound on path length; the number of possible states is one safe choice (for social networks, ~6 hops covers essentially everyone).
+
+### 9.4 Uniform-Cost Search / Dijkstra's Algorithm (§3.4.2)
+
+Both DFS and BFS ignore action costs. **Uniform-cost search (UCS)** — called **Dijkstra's algorithm** in theoretical CS — expands the **cheapest partial path first**: best-first search with $f(n)$ = path cost from the root, i.e. a priority queue ordered by $g(n)$.
+
+Where BFS spreads out in waves of uniform *depth*, UCS spreads out in waves of uniform *path-cost*. The goal test happens at **expansion**, not generation — this matters:
+
+> **Worked example — Sibiu → Bucharest (§3.4.2, Figure 3.10).** Sibiu's successors are Rimnicu Vilcea (cost 80) and Fagaras (99). UCS expands Rimnicu Vilcea first, adding Pitești at $80 + 97 = 177$. Next it expands Fagaras, which generates Bucharest at $99 + 211 = 310$ — but that node is only *generated*, not expanded, so the goal isn't detected yet. Expanding Pitești next yields a second path to Bucharest at $80 + 97 + 101 = 278$, which replaces the 310 path in `reached`. That node now has the lowest cost, gets expanded, and is returned as the goal. Had we tested for goals on *generation*, we would have returned the more expensive 310 path through Fagaras.
+
+| Criterion | Result |
+|---|---|
+| Completeness | **Yes**, if all action costs are $> \epsilon > 0$ and a solution exists |
+| Optimality | **Yes** — the first solution found has cost at least as low as any other node still in the frontier |
+| Time | $O\left(b^{1 + \lfloor C^*/\epsilon \rfloor}\right)$, where $C^*$ = optimal solution cost and $\epsilon$ = lower bound on action cost — can be much worse than $b^d$, because UCS may explore large trees of cheap actions before taking one expensive but useful step |
+| Space | $O\left(b^{1 + \lfloor C^*/\epsilon \rfloor}\right)$ — every node in the last tier of "effective depth" is stored |
+
+When all action costs are equal, $b^{1+\lfloor C^*/\epsilon \rfloor}$ collapses to $b^{d+1}$ and UCS behaves like BFS. The weakness: **no information about which direction to go** — it explores in every direction at once. That's what informed search fixes.
+
+### 9.5 One Search Algorithm for All Cases
+
+DFS, BFS, and UCS are the *same* algorithm except for how the frontier is ordered:
+
+| Strategy | Frontier data structure |
+|---|---|
+| DFS | stack (LIFO) |
+| BFS | FIFO queue |
+| Dijkstra's / UCS | priority queue ordered by path cost $g(n)$ |
+
+So one implementation takes a strategy object with `.add()` and `.remove()` — swap the container, get a different algorithm.
+
+## 10. Informed (Heuristic) Search Strategies (§3.5)
+
+Uninformed algorithms search blindly in every direction until the goal happens to be found. An **informed** strategy uses domain-specific hints about where goals are:
+
+> A **heuristic** $h(n)$ estimates the cost of the cheapest path from state $n$ to a goal — "how far do I still have to go?" For route-finding, the straight-line distance on the map is the classic example.
+
+### 10.1 Greedy Best-First Search
+
+**Strategy: expand the node with the lowest heuristic value.** Best-first search with $f(n) = h(n)$ — a priority queue keyed by $h$:
+
+```python
+from queue import PriorityQueue
+
+class GreedySearchStrategyQueue:
+    def __init__(self, heuristic):
+        self.q = PriorityQueue()
+        self.h = heuristic
+
+    def add(self, state):
+        self.q.put((self.h(state), state))
+
+    def remove(self):
+        cost, state = self.q.get()
+        return state
+```
+
+It drops straight into the general tree-search framework — only the queue changes. On Romania with $h_{\text{SLD}}$ (straight-line distance to Bucharest), greedy search expands Arad → Sibiu → Fagaras → Bucharest and never touches a node off the solution path. But the found path is **not optimal**: via Sibiu–Fagaras it's 32 miles longer than through Rimnicu Vilcea–Pitești. "Greedy" because each step gets as close to a goal as possible, ignoring how much was already spent getting there — greediness can lead to worse results than being careful. Complete in finite state spaces (worst case $O(|V|)$), but not cost-optimal.
+
+### 10.2 A* Search: Looking Both Backwards and Forwards
+
+UCS orders by the **backwards** path cost $g(n)$ (how far I've come); greedy search orders by the **forward** goal estimate $h(n)$ (how far is left). **A\*** combines them — it orders by the sum:
+
+$$
+f_{\text{A}^*}(n) = g(n) + h(n) \;=\; \text{estimated cost of the best path that goes through } n
+$$
+
+**Termination subtlety.** A goal node may appear on the frontier before it's optimal. In the lecture's example, both $S \to B \to G$ ($f = 5$) and $S \to A \to G$ ($f = 4$) are generated; you must **wait until a goal is dequeued** (expanded), not just generated — otherwise you'd stop at the cost-5 path.
+
+> In Romania, Bucharest first appears on the frontier at $f = 450$, but A* doesn't take it: Pitești sits at $f = 417$, so a solution as cheap as 417 might still exist through there. Only when a different path to Bucharest reaches $f = 418$ and becomes the frontier minimum is it expanded — and that's the optimal solution.
+
+**What else do we need for optimality?** Consider: start $S$, goal $G$ reachable directly at cost 5, but $h(S) = 7$. Then $f(S \to G) = 5 + 0 = 5 < f(S) = 7$ — the estimate says going *toward* the goal is more expensive than being there. If we stopped on that, we'd stop too early. The fix:
+
+> **Admissibility.** A heuristic $h$ is **admissible** if $h(n) \le h^*(n)$ for every node, where $h^*$ is the *true* cost to the nearest goal. In plain words: an admissible heuristic is **optimistic** — it never overestimates how far a state is from a goal.
+
+**Why A* with an admissible heuristic is optimal (proof sketch from the slides).** Let $A$ be an optimal goal node and $B$ a suboptimal one; assume $h$ is admissible. Claim: $A$ exits the fringe before $B$. Suppose $B$ is on the fringe — then some ancestor $n$ of $A$ (on the optimal path) must also still be on the fringe, since A* only stops when it dequeues a goal. Because $h$ never overestimates,
+
+$$
+f(n) = g(n) + h(n) \le g(n) + h^*(n) = C^* < f(B),
+$$
+
+so $n$ has strictly lower $f$ than $B$ and is expanded first. Recursively, every ancestor of $A$ expands before $B$, so $A$ itself dequeues before $B$. A* therefore returns the optimal goal. (The textbook's version is a proof by contradiction: if A* returned a suboptimal path of cost $C > C^*$, some unexpanded node $n$ on the optimal path would have to satisfy both $f(n) > C^*$ and — by admissibility — $f(n) \le g^*(n) + h^*(n) = C^*$, a contradiction.)
+
+**Consistency (textbook §3.5.3).** A stronger property: $h$ is **consistent** if for every node $n$ and successor $n'$ via action $a$,
+
+$$
+h(n) \le c(n, a, n') + h(n')
+$$
+
+— the triangle inequality (a side of a triangle can't exceed the sum of the other two). Every consistent heuristic is admissible (not vice versa), so A* with one is cost-optimal. Consistency also makes $f = g + h$ **monotonic** along any path, which means the first time we reach a state it's on an optimal path — no re-adding states to the frontier, no updating `reached`. With a consistent heuristic A* expands exactly the nodes with $f(n) < C^*$ (plus possibly some at $f = C^*$), and is **optimally efficient**: no other algorithm using the same heuristic can expand fewer.
+
+**Beyond the lecture.** The textbook continues §3.5 with variants for when A*'s guarantees or memory use don't fit: **weighted A\*** ($f(n) = g(n) + W \cdot h(n)$, $W > 1$ — finds a solution within $W \times C^*$ of optimal while exploring far fewer states), **beam search** (keep only the $k$ best frontier nodes), and **iterative-deepening A\*** ($\text{IDA}^*$: iterative deepening with an $f$-cost cutoff instead of a depth cutoff — A* without storing all reached states).
+
+---
+
 ## Quick Reference
 
 | Term | Meaning |
@@ -229,3 +413,14 @@ In *infinite* state spaces more care is needed. An algorithm that repeatedly app
 | **Redundant path / cycle** | worse way to reach the same state / loopy path; 20 states → infinite tree |
 | Four performance criteria | completeness, cost optimality, time complexity, space complexity |
 | $d$, $m$, $b$ | depth of optimal solution, max path length, branching factor (implicit state spaces) |
+| **Uninformed search** | no clue how close a state is to the goal — DFS, BFS, UCS (§3.4) |
+| **BFS (breadth-first)** | expand shallowest node first; FIFO queue; complete; optimal only if all actions cost the same; time/space $O(b^m)$ ($O(b^s)$ with known solution depth $s$); memory is its killer |
+| **DFS (depth-first)** | expand deepest node first; stack, no reached table; incomplete in cyclic/infinite spaces; not cost-optimal ("leftmost" solution); space only $O(b \cdot m)$ |
+| **Iterative deepening** | DFS with an increasing max-depth limit — BFS's completeness at DFS's memory cost |
+| **UCS / Dijkstra's algorithm** | expand cheapest partial path first (priority queue on $g(n)$); complete and optimal for positive costs; time/space $O(b^{1+\lfloor C^*/\epsilon \rfloor})$ |
+| **Heuristic $h(n)$** | estimate of the cost from state $n$ to a goal — straight-line distance is the classic example (§3.5) |
+| **Greedy best-first search** | expand node with lowest $h(n)$; fast but not optimal (Romania: 32 miles longer than A*) |
+| **A\* search** | $f(n) = g(n) + h(n)$ — combines UCS's backwards cost with greedy's forward estimate; complete and optimal when $h$ is admissible |
+| **Admissible heuristic** | $h(n) \le h^*(n)$ for all nodes — never overestimates the true cost to a goal (optimistic) |
+| **Consistent heuristic** | $h(n) \le c(n, a, n') + h(n')$ (triangle inequality); implies admissibility; makes $f$ monotonic → no re-expansion of states |
+| **Weighted A\*** | $f(n) = g(n) + W \cdot h(n)$ with $W > 1$: solution within $W \times C^*$ of optimal, explores far fewer states |
