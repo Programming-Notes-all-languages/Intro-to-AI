@@ -7,12 +7,7 @@
 
 > **Definition (Search).** Finding an action sequence that leads from an initial state to a goal state.
 
-```mermaid
-flowchart LR
-    G[Formulate goal] --> P[Formulate problem]
-    P --> S[Search for solution]
-    S --> E[Execute actions]
-```
+![Problem-solving process](../assets/ch03-problem-solving.svg)
 
 A fixed action sequence is appropriate for a fully observable, deterministic, known environment. Uncertainty requires a conditional plan that responds to percepts.
 
@@ -23,8 +18,8 @@ A fixed action sequence is appropriate for a fully observable, deterministic, kn
 | **State space** | all possible states |
 | **Initial state** | starting state |
 | **Goal test** | determines whether a state is a goal |
-| $\operatorname{ACTIONS}(s)$ | actions allowed in state $s$ |
-| $\operatorname{RESULT}(s,a)$ | state produced by action $a$ |
+| $\text{ACTIONS}(s)$ | actions allowed in state $s$ |
+| $\text{RESULT}(s,a)$ | state produced by action $a$ |
 | $c(s,a,s')$ | action cost |
 
 A **solution** is a path from the initial state to a goal. An **optimal solution** has minimum total path cost.
@@ -41,11 +36,7 @@ A **solution** is a path from the initial state to a goal. An **optimal solution
 | **Reached set** | states already generated |
 | **Expand** | generate a node's successors |
 
-```mermaid
-flowchart LR
-    I[Expanded interior] --> F[Frontier]
-    F --> X[Unreached exterior]
-```
+![The frontier separates expanded and unreached states](../assets/ch03-frontier.svg)
 
 A search node stores its state, parent, generating action, and path cost $g(n)$. Reached-state tracking removes cycles and worse paths to the same state.
 
@@ -90,11 +81,7 @@ Common symbols: $b$ = branching factor, $d$ = optimal solution depth, and $m$ = 
 | Greedy best-first | $f(n)=h(n)$ | considers estimated cost remaining |
 | A\* | $f(n)=g(n)+h(n)$ | balances both |
 
-```mermaid
-flowchart LR
-    G["g(n): cost so far"] --> A["A*: f(n)=g(n)+h(n)"]
-    H["h(n): estimated cost left"] --> A
-```
+![A-star combines path cost and estimated remaining cost](../assets/ch03-astar.svg)
 
 ### A\* Search
 

@@ -17,14 +17,7 @@ Use local search when the **final state matters but the path does not**, such as
 
 > **Definition (Objective function).** A function assigning each state a value to maximize or a cost to minimize.
 
-```mermaid
-flowchart LR
-    A[Current state] --> B[Generate neighbors]
-    B --> C[Choose promising state]
-    C --> D{Stop condition?}
-    D -- No --> B
-    D -- Yes --> E[Return best state]
-```
+![Local-search loop](../assets/ch04-local-search.svg)
 
 ## 2. Hill Climbing
 
@@ -34,12 +27,7 @@ Hill climbing stores only the current state and performs no lookahead. It is als
 
 ### State-Space Landscape
 
-```mermaid
-flowchart LR
-    S[Start] --> U1[Higher value]
-    U1 --> L[Local maximum]
-    L -. blocked by worse moves .-> G[Global maximum]
-```
+![Hill climbing can become stuck at a local maximum](../assets/ch04-landscape.svg)
 
 | Obstacle | Effect |
 |---|---|
@@ -75,14 +63,7 @@ High temperature $T$ allows exploration; lowering $T$ gradually makes the search
 
 > **Definition (Local beam search).** Maintain $k$ states, generate their successors, and retain the best $k$ candidates.
 
-```mermaid
-flowchart LR
-    A[$k$ current states] --> B[Generate up to $kb$ successors]
-    B --> C[Keep best $k$]
-    C --> D{Goal, no improvement, or limit?}
-    D -- No --> B
-    D -- Yes --> E[Return best state]
-```
+![Local beam search retains the best k states](../assets/ch04-beam-search.svg)
 
 - **Space:** $O(k)$ when successors are processed one at a time.
 - **Time:** $O(mkb)$ for depth limit $m$ and branching factor $b$.

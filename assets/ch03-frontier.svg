@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="140" viewBox="0 0 900 140" role="img" aria-labelledby="title desc">
+  <title id="title">Frontier separation</title><desc id="desc">The frontier separates the expanded interior from the unreached exterior.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" class="arrow"/></marker></defs>
+  <style>text{font:600 17px system-ui,sans-serif;fill:#24292f}.box{fill:#f6f8fa;stroke:#57606a;stroke-width:2}.frontier{fill:#ddf4ff;stroke:#0969da;stroke-width:2}.line{stroke:#57606a;stroke-width:2;marker-end:url(#arrow)}.arrow{fill:#57606a}@media(prefers-color-scheme:dark){text{fill:#c9d1d9}.box{fill:#161b22;stroke:#8b949e}.frontier{fill:#0c2d6b;stroke:#58a6ff}.line{stroke:#8b949e}.arrow{fill:#8b949e}}</style>
+  <rect class="box" x="35" y="35" width="250" height="70" rx="8"/><text x="160" y="77" text-anchor="middle">Expanded interior</text>
+  <rect class="frontier" x="355" y="35" width="190" height="70" rx="8"/><text x="450" y="77" text-anchor="middle">Frontier</text>
+  <rect class="box" x="615" y="35" width="250" height="70" rx="8"/><text x="740" y="77" text-anchor="middle">Unreached exterior</text>
+  <line class="line" x1="285" y1="70" x2="355" y2="70"/><line class="line" x1="545" y1="70" x2="615" y2="70"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="210" viewBox="0 0 980 210" role="img" aria-labelledby="title desc">
+  <title id="title">Local beam search</title><desc id="desc">Maintain k states, generate up to k times b successors, retain the best k, and repeat until stopping.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" class="arrow"/></marker></defs>
+  <style>text{font:600 15px system-ui,sans-serif;fill:#24292f}.label{font-size:13px;font-weight:400}.box{fill:#f6f8fa;stroke:#57606a;stroke-width:2}.decision{fill:#fff8c5;stroke:#9a6700;stroke-width:2}.line{fill:none;stroke:#57606a;stroke-width:2;marker-end:url(#arrow)}.arrow{fill:#57606a}@media(prefers-color-scheme:dark){text{fill:#c9d1d9}.box{fill:#161b22;stroke:#8b949e}.decision{fill:#341a00;stroke:#d29922}.line{stroke:#8b949e}.arrow{fill:#8b949e}}</style>
+  <rect class="box" x="15" y="35" width="175" height="65" rx="8"/><text x="102" y="74" text-anchor="middle">k current states</text>
+  <rect class="box" x="235" y="35" width="220" height="65" rx="8"/><text x="345" y="64" text-anchor="middle">Generate up to kb</text><text x="345" y="84" text-anchor="middle">successors</text>
+  <rect class="box" x="500" y="35" width="160" height="65" rx="8"/><text x="580" y="74" text-anchor="middle">Keep best k</text>
+  <path class="decision" d="M760 20 L860 67 L760 115 L660 67 Z"/><text x="760" y="63" text-anchor="middle">Stop</text><text x="760" y="82" text-anchor="middle">condition?</text>
+  <rect class="box" x="780" y="145" width="180" height="55" rx="8"/><text x="870" y="179" text-anchor="middle">Return best state</text>
+  <line class="line" x1="190" y1="67" x2="235" y2="67"/><line class="line" x1="455" y1="67" x2="500" y2="67"/><line class="line" x1="660" y1="67" x2="661" y2="67"/><path class="line" d="M760 115 V145 H780"/><text class="label" x="744" y="136">Yes</text><path class="line" d="M660 67 H635 V130 H345 V100"/><text class="label" x="622" y="57">No</text>
+</svg>

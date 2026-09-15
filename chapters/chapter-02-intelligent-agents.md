@@ -7,13 +7,7 @@
 
 > **Definition (Agent).** An entity that perceives its environment through **sensors** and acts on it through **actuators**.
 
-```mermaid
-flowchart LR
-    E[Environment] -- percepts --> S[Sensors]
-    S --> A[Agent]
-    A --> C[Actuators]
-    C -- actions --> E
-```
+![Agent and environment interaction loop](../assets/ch02-agent-loop.svg)
 
 | Agent | Sensors | Actuators |
 |---|---|---|
@@ -69,12 +63,7 @@ A simple reflex agent matches the interpreted percept against **condition-action
 
 > **Condition-action rule.** *If condition, then action.*
 
-```mermaid
-flowchart LR
-    P[Current percept] --> I[Interpret input]
-    I --> R[Match rule]
-    R --> A[Action]
-```
+![Simple reflex agent flow](../assets/ch02-reflex-flow.svg)
 
 For the two-square vacuum world:
 

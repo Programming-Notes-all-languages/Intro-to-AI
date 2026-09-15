@@ -56,32 +56,17 @@ With an adversary, the controlling player changes how values are backed up.
 > **Definition (Minimax value).** The utility MAX can guarantee from state $s$ when both players act optimally.
 
 $$
-\operatorname{MINIMAX}(s) =
+\text{MINIMAX}(s) =
 \begin{cases}
-\operatorname{UTILITY}(s, \mathrm{MAX}) & \text{if } s \text{ is terminal}, \\
-\max\limits_{a \in \operatorname{ACTIONS}(s)} \operatorname{MINIMAX}(\operatorname{RESULT}(s,a)) & \text{if MAX moves}, \\
-\min\limits_{a \in \operatorname{ACTIONS}(s)} \operatorname{MINIMAX}(\operatorname{RESULT}(s,a)) & \text{if MIN moves}.
+\text{UTILITY}(s, \mathrm{MAX}) & \text{if } s \text{ is terminal}, \\
+\max\limits_{a \in \text{ACTIONS}(s)} \text{MINIMAX}(\text{RESULT}(s,a)) & \text{if MAX moves}, \\
+\min\limits_{a \in \text{ACTIONS}(s)} \text{MINIMAX}(\text{RESULT}(s,a)) & \text{if MIN moves}.
 \end{cases}
 $$
 
 ### Value Backup Visual
 
-```mermaid
-flowchart TD
-    R["MAX: max(3, 2) = 3"]
-    A["MIN: min(3, 8) = 3"]
-    B["MIN: min(2, 6) = 2"]
-    A1[3]
-    A2[8]
-    B1[2]
-    B2[6]
-    R --> A
-    R --> B
-    A --> A1
-    A --> A2
-    B --> B1
-    B --> B2
-```
+![Minimax value backup](../assets/ch06-minimax-tree.svg)
 
 MAX chooses the branch valued $3$; MIN would choose the lowest leaf within that branch.
 

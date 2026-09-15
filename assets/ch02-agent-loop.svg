@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="180" viewBox="0 0 900 180" role="img" aria-labelledby="title desc">
+  <title id="title">Agent and environment interaction loop</title>
+  <desc id="desc">Percepts flow from the environment through sensors to the agent; actions flow through actuators back to the environment.</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" class="arrow"/></marker></defs>
+  <style>
+    text{font:600 16px system-ui,sans-serif;fill:#24292f}.label{font-size:14px;font-weight:400}.box{fill:#f6f8fa;stroke:#57606a;stroke-width:2}.line{fill:none;stroke:#57606a;stroke-width:2;marker-end:url(#arrow)}.arrow{fill:#57606a}
+    @media(prefers-color-scheme:dark){text{fill:#c9d1d9}.box{fill:#161b22;stroke:#8b949e}.line{stroke:#8b949e}.arrow{fill:#8b949e}}
+  </style>
+  <rect class="box" x="25" y="55" width="180" height="70" rx="8"/><text x="115" y="96" text-anchor="middle">Environment</text>
+  <rect class="box" x="285" y="55" width="140" height="70" rx="8"/><text x="355" y="96" text-anchor="middle">Sensors</text>
+  <rect class="box" x="505" y="55" width="140" height="70" rx="8"/><text x="575" y="96" text-anchor="middle">Agent</text>
+  <rect class="box" x="725" y="55" width="150" height="70" rx="8"/><text x="800" y="96" text-anchor="middle">Actuators</text>
+  <path class="line" d="M205 75 H285"/><text class="label" x="245" y="63" text-anchor="middle">percepts</text>
+  <path class="line" d="M425 90 H505"/><path class="line" d="M645 90 H725"/>
+  <path class="line" d="M800 125 V155 H115 V125"/><text class="label" x="455" y="172" text-anchor="middle">actions</text>
+</svg>
