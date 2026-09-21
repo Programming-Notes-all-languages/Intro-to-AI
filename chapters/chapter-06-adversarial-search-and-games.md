@@ -1,7 +1,7 @@
 # Chapter 6 — Adversarial Search and Games
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
-**Sections:** 6.1 Game Theory (pp. 192–193) · 6.2 Optimal Decisions in Games (pp. 194–196).
+**Sections:** 6.1 Game Theory (pp. 192–193) · 6.2 Optimal Decisions in Games (pp. 194–201) · 6.3 Heuristic Alpha–Beta Tree Search (pp. 202–205) · 6.5 Stochastic Games (pp. 211–213).
 
 ## 1. Adversarial Search
 
@@ -94,6 +94,77 @@ The exponential time cost makes full minimax impractical for large games; deeper
 
 A single-agent plan chooses any reachable high-value leaf. A minimax strategy is a **conditional plan** that accounts for every opponent response. MAX cannot select a desirable terminal state directly; it selects a move whose worst optimal reply is best.
 
+## Day 4 — Multi-agent Search (Lecture)
+
+### 6. Game Classes
+
+Multi-agent search explicitly models other decision-makers rather than treating them as random parts of the environment. The game properties determine which search model is appropriate.
+
+| Property | Distinction | Search consequence |
+|---|---|---|
+| Outcomes | deterministic or stochastic | stochastic games require chance nodes |
+| Players | one, two, or more | more players need one utility value per player |
+| Information | perfect or partial | partial information requires reasoning about hidden state |
+| Utilities | zero-sum or general-sum | general-sum games can contain cooperation, competition, or both |
+
+> **Definition (Zero-sum game).** A game in which one player's gain is the other player's loss; maximizing MAX's utility is equivalent to minimizing MIN's utility.
+
+The core minimax setting is deterministic, two-player, turn-taking, perfect-information, and zero-sum. In a general-sum game, each terminal state needs a utility vector rather than one scalar. A player chooses the successor with the highest value for that player, so temporary alliances can arise even when every player acts in self-interest.
+
+### 7. Alpha–Beta Pruning
+
+> **Definition (Alpha–beta pruning).** A depth-first minimax optimization that skips a subtree once its value cannot affect the root's minimax decision.
+
+$\alpha$ is MAX's best guaranteed value found so far along the current path; it is a lower bound. $\beta$ is MIN's best guaranteed value found so far; it is an upper bound.
+
+| Node being expanded | Update | Cutoff condition |
+|---|---|---|
+| MAX | $\alpha = \max(\alpha, v)$ | $v \ge \beta$ |
+| MIN | $\beta = \min(\beta, v)$ | $v \le \alpha$ |
+
+At a MIN node, the running value can only decrease. If it reaches or falls below an ancestor MAX choice already worth $\alpha$, MAX will never choose this path, so the remaining children are irrelevant. The reasoning is symmetric at MAX nodes.
+
+Alpha–beta returns the same minimax decision as exhaustive minimax, but a pruned interior node's returned value may be only a bound rather than its exact minimax value. To select an action, retain the best action found at the root instead of relying on a value-only routine.
+
+Move ordering controls how much pruning occurs. Trying promising moves first produces earlier cutoffs. Minimax takes $O(b^m)$ time; with perfect ordering, alpha–beta examines $O(b^{m/2})$ nodes, effectively allowing roughly twice the search depth in the same time. Its depth-first space use remains $O(bm)$ when successors are generated together, or $O(m)$ when generated one at a time.
+
+### 8. Depth-Limited Search and Evaluation Functions
+
+Full game trees are usually too large to search to terminal states. A depth-limited alpha–beta search applies an evaluation function at a cutoff state instead of the terminal utility.
+
+> **Definition (Evaluation function).** A fast estimate $\text{EVAL}(s,p)$ of the utility of state $s$ to player $p$.
+
+For terminal states, evaluation must equal true utility. For nonterminal states, it should use the same outcome scale and rank positions in the same order as their true chances of winning. Unlike an admissible heuristic for A*, a game evaluation does not need to be nonnegative or a guaranteed underestimate; its goal is useful position ranking within a fixed search budget.
+
+A common design is a weighted feature sum:
+
+$$
+\text{EVAL}(s) = \sum_{i=1}^{n} w_i f_i(s)
+$$
+
+Features can include material, mobility, king safety, or board control. The weights express their relative importance and can be learned from data. A cutoff test should always stop at terminal states and may stop at a depth limit; iterative deepening instead completes progressively deeper searches and returns the action from the deepest completed iteration.
+
+Two cutoff pitfalls are important:
+
+- **Quiescence:** Evaluate stable positions, not positions with an immediate tactical swing still pending. A quiescence search selectively extends tactical moves such as captures.
+- **Horizon effect:** A player may delay an unavoidable loss until it lies beyond the depth limit, making a bad line appear favorable. Selective extensions can reduce this error but cannot remove all approximation error.
+
+### 9. Expectimax and Stochastic Games
+
+> **Definition (Chance node).** A game-tree node whose outgoing branches are random outcomes with known probabilities.
+
+Expectimax replaces MIN nodes with chance nodes when uncertainty comes from sources such as dice rolls, action failures, an uncertain environment, or an imperfect opponent modeled probabilistically. MAX still selects its highest-valued action, while a chance node backs up an expected value:
+
+$$
+V(s) = \sum_{r} P(r) V(\text{RESULT}(s,r))
+$$
+
+**Expectiminimax** combines all three kinds of node: MAX takes a maximum, MIN takes a minimum, and CHANCE takes a probability-weighted average. It is appropriate for games such as backgammon, where player moves alternate with dice rolls.
+
+Chance nodes make search much more expensive because every possible random outcome must be considered. For $n$ possible chance outcomes per event, exhaustive expectiminimax has time complexity $O(b^m n^m)$. Standard alpha–beta cutoffs do not transfer directly: a chance value depends on all branches. Pruning is possible only when known utility bounds and the remaining probability mass establish that the expected value cannot change the decision.
+
+For stochastic games, evaluation values must represent expected utility or a positive linear transformation of win probability. Merely preserving the order of heuristic scores is not enough, because averaging depends on the numerical distances between values.
+
 ## Quick Reference
 
 | Term | Meaning |
@@ -108,3 +179,12 @@ A single-agent plan chooses any reachable high-value leaf. A minimax strategy is
 | **Game tree** | possible move sequences from a state |
 | **Minimax value** | utility guaranteed under optimal play |
 | **Minimax decision** | root move with highest backed-up value for MAX |
+| **$\alpha$** | MAX's lower bound: best guaranteed value on the current path |
+| **$\beta$** | MIN's upper bound: best guaranteed value on the current path |
+| **Alpha–beta cutoff** | stop at MAX when $v \ge \beta$; stop at MIN when $v \le \alpha$ |
+| **Evaluation function** | fast estimate of a nonterminal state's utility |
+| **Quiescence search** | selective extension to reach tactically stable positions |
+| **Horizon effect** | an inevitable event appears absent because it lies beyond the search depth |
+| **Chance node** | node that averages successor values using outcome probabilities |
+| **Expectimax** | MAX search with chance nodes and expected-value backup |
+| **Expectiminimax** | game-tree search that combines MAX, MIN, and chance nodes |

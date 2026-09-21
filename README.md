@@ -14,7 +14,7 @@ Textbook: *Artificial Intelligence: A Modern Approach* (4th ed.), Russell & Norv
 | 3 | Solving problems by searching: uninformed/informed search, heuristics | [Chapter 3](chapters/chapter-03-solving-problems-by-searching.md) (§3.1 + §3.3–§3.5 · Weeks 2–3) |
 | 4 | Search in complex environments: local search, continuous spaces | [Chapter 4](chapters/chapter-04-search-in-complex-environments.md) (§4.1 · Week 3) |
 | 5 | Constraint satisfaction: backtracking, propagation | — |
-| 6 | Adversarial search: game theory, alpha-beta pruning, MCTS | [Chapter 6](chapters/chapter-06-adversarial-search-and-games.md) (§§6.1–6.2 · Week 3) |
+| 6 | Adversarial search: game theory, alpha-beta pruning, MCTS | [Chapter 6](chapters/chapter-06-adversarial-search-and-games.md) (§§6.1–6.3, §6.5 · Week 3) |
 | 7 | Logical agents: propositional logic, theorem proving | — |
 | 8 | First-order logic: syntax and semantics | — |
 | 9 | Inference in FOL: unification, resolution | — |
