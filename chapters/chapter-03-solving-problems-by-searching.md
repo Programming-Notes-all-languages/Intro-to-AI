@@ -26,6 +26,8 @@ A **solution** is a path from the initial state to a goal. An **optimal solution
 
 > **Definition (Abstraction).** Removing details that do not affect the solution. A useful abstraction keeps actions valid while making the problem easier to solve.
 
+The **world state** contains every detail; the **search state** retains only what affects the task. For a maze with 120 positions, 30 food dots, two ghosts with 12 positions each, and four facings, a position-only pathfinding state space has 120 states. Eating all dots instead requires position and a 30-bit record of remaining food: $120\cdot 2^{30}$ states. The full world-state count also includes ghost positions and facing: $120\cdot 2^{30}\cdot 12^2\cdot 4$.
+
 ## 2. Search Structure
 
 | Concept | Meaning |
@@ -39,6 +41,8 @@ A **solution** is a path from the initial state to a goal. An **optimal solution
 ![The frontier separates expanded and unreached states](../assets/ch03-frontier.svg)
 
 A search node stores its state, parent, generating action, and path cost $g(n)$. Reached-state tracking removes cycles and worse paths to the same state.
+
+A cycle in the state graph can produce an infinite search tree: distinct action sequences may lead back to the same state. A closed set prevents repeated expansion only if discarding later paths to that state is safe for the chosen search rule.
 
 > **Definition (Best-first search).** Expand the frontier node with the smallest evaluation value $f(n)$.
 
@@ -64,7 +68,7 @@ Common symbols: $b$ = branching factor, $d$ = optimal solution depth, and $m$ = 
 | **BFS** | shallowest first; FIFO | Yes | Equal costs only | $O(b^d)$ | $O(b^d)$ |
 | **DFS** | deepest first; stack | No in cyclic/infinite spaces | No | $O(b^m)$ | $O(bm)$ |
 | **Iterative deepening** | repeated depth-limited DFS | Yes | Equal costs only | $O(b^d)$ | $O(bd)$ |
-| **UCS** | lowest $g(n)$ first | Yes, with costs $\ge \epsilon > 0$ | Yes | exponential in $C^*/\epsilon$ | same as time |
+| **UCS** | lowest $g(n)$ first | Yes, with costs $\ge \epsilon > 0$ | Yes | exponential in $C^{*}/\epsilon$ | same as time |
 
 - **BFS** finds the shallowest solution but consumes exponential memory.
 - **DFS** uses little memory but can follow an infinite or cyclic path.
@@ -96,10 +100,10 @@ A goal is accepted when **dequeued**. Merely generating a goal does not prove th
 > **Definition (Admissible heuristic).** A heuristic that never overestimates the true remaining cost:
 
 $$
-0 \le h(n) \le h^*(n)
+0 \le h(n) \le h^{*}(n)
 $$
 
-With an admissible heuristic, A\* tree search is cost-optimal. A useful heuristic should be close to $h^*$ while remaining admissible; $h(n)=0$ reduces A\* to UCS.
+With an admissible heuristic, A\* tree search is cost-optimal. A useful heuristic should be close to $h^{*}$ while remaining admissible; $h(n)=0$ reduces A\* to UCS.
 
 > **Definition (Consistent heuristic).** For every successor $n'$ of $n$,
 
@@ -109,9 +113,13 @@ $$
 
 Consistency is the triangle inequality for heuristics. It implies admissibility and makes $f(n)$ nondecreasing along a path, allowing graph-search A\* to avoid reopening expanded states.
 
+An admissible but inconsistent heuristic can let A\* close a state reached at cost $g=3$ before discovering a path to that same state at cost $g=2$. A graph search that refuses to reopen it may miss the cheaper solution; consistency makes the first **dequeued** path to a state cheapest. Admissibility alone suffices for A\* tree search, not for this no-reopening policy.
+
 ### Choosing Heuristics
 
 A heuristic can be derived from a **relaxed problem** that removes constraints. The relaxed problem's optimal cost is a lower bound on the original cost.
+
+On a four-direction grid with unit moves and no shortcuts, Manhattan distance ignores walls and is admissible; Euclidean distance also ignores walls but gives a smaller estimate. For a goal 10 columns and 5 rows away, they give $15$ and $\sqrt{125}\approx 11.18$, respectively. Manhattan dominates Euclidean under these movement assumptions.
 
 > **Definition (Dominance).** Heuristic $h_a$ dominates $h_b$ when both are admissible and $h_a(n) \ge h_b(n)$ for every state. The dominating heuristic is at least as informed.
 
@@ -154,7 +162,7 @@ Larger $W$ emphasizes speed over optimality. Weighted A\* may expand fewer nodes
 | **UCS** | minimum $g(n)$; complete and cost-optimal for positive costs |
 | **Greedy best-first** | minimum $h(n)$; fast but not cost-optimal |
 | **A\*** | minimum $g(n)+h(n)$ |
-| **Admissible** | $h(n) \le h^*(n)$ |
+| **Admissible** | $h(n) \le h^{*}(n)$ |
 | **Consistent** | $h(n) \le c(n,n')+h(n')$ |
 | **Dominance** | larger admissible heuristic is more informed |
 | **Weighted A\*** | $g(n)+Wh(n)$; trades optimality for speed when $W>1$ |

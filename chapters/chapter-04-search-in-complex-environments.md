@@ -71,6 +71,8 @@ High temperature $T$ allows exploration; lowering $T$ gradually makes the search
 - **Main risk:** all $k$ states may cluster in one region.
 - **Stochastic beam search:** samples successors by value instead of always taking the top $k$, preserving diversity.
 
+Unlike $k$ independent random restarts, beam states share their search effort: all successors compete for the same $k$ slots. In the textbook's local beam search, each new beam consists of the best **successors**; retaining an old state as well is a different, elitist variant. Beam width $k=1$ selects the best successor, but without an improvement check it can move downhill instead of stopping like ordinary hill climbing.
+
 ## 5. Choosing a Local Search Method
 
 | Situation | Good starting point |

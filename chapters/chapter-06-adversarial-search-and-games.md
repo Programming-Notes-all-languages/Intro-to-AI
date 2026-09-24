@@ -115,7 +115,7 @@ The core minimax setting is deterministic, two-player, turn-taking, perfect-info
 
 > **Definition (Alpha–beta pruning).** A depth-first minimax optimization that skips a subtree once its value cannot affect the root's minimax decision.
 
-$\alpha$ is MAX's best guaranteed value found so far along the current path; it is a lower bound. $\beta$ is MIN's best guaranteed value found so far; it is an upper bound.
+$\alpha$ is MAX's best guaranteed value found so far along the current path; it is a lower bound. $\beta$ is MIN's best guaranteed value found so far; it is an upper bound. Initialize $\alpha=-\infty$ and $\beta=+\infty$.
 
 | Node being expanded | Update | Cutoff condition |
 |---|---|---|
@@ -123,6 +123,8 @@ $\alpha$ is MAX's best guaranteed value found so far along the current path; it 
 | MIN | $\beta = \min(\beta, v)$ | $v \le \alpha$ |
 
 At a MIN node, the running value can only decrease. If it reaches or falls below an ancestor MAX choice already worth $\alpha$, MAX will never choose this path, so the remaining children are irrelevant. The reasoning is symmetric at MAX nodes.
+
+For a MAX root with two MIN children searched left to right, suppose the left leaves are $3,12,8$ and the right leaves are $2,4,6$. The left MIN returns $3$, setting root $\alpha=3$. The right MIN sees $2\le\alpha$ immediately and skips $4$ and $6$; the root still chooses value $3$.
 
 Alpha–beta returns the same minimax decision as exhaustive minimax, but a pruned interior node's returned value may be only a bound rather than its exact minimax value. To select an action, retain the best action found at the root instead of relying on a value-only routine.
 
@@ -158,6 +160,14 @@ Expectimax replaces MIN nodes with chance nodes when uncertainty comes from sour
 $$
 V(s) = \sum_{r} P(r) V(\text{RESULT}(s,r))
 $$
+
+For outcomes valued $8,24,-12$ with probabilities $1/2,1/3,1/6$, the chance value is
+
+$$
+(1/2)(8)+(1/3)(24)+(1/6)(-12)=10.
+$$
+
+Unlike MIN's worst-case choice, CHANCE uses the probability-weighted average: between branches valued $10,10$ and $9,100$, MIN prefers the first branch for MAX, while a 50/50 chance model prefers the second ($54.5$ versus $10$).
 
 **Expectiminimax** combines all three kinds of node: MAX takes a maximum, MIN takes a minimum, and CHANCE takes a probability-weighted average. It is appropriate for games such as backgammon, where player moves alternate with dice rolls.
 
