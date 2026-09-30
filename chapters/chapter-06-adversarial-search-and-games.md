@@ -1,7 +1,7 @@
 # Chapter 6 — Adversarial Search and Games
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
-**Sections:** 6.1 Game Theory (pp. 192–193) · 6.2 Optimal Decisions in Games (pp. 194–201) · 6.3 Heuristic Alpha–Beta Tree Search (pp. 202–205) · 6.5 Stochastic Games (pp. 211–213).
+**Sections:** 6.1 Game Theory (pp. 192–193) · 6.2 Optimal Decisions in Games (pp. 194–201) · 6.3 Heuristic Alpha–Beta Tree Search (pp. 202–205) · 6.5 Stochastic Games (pp. 211–214).
 
 ## 1. Adversarial Search
 
@@ -175,6 +175,36 @@ Chance nodes make search much more expensive because every possible random outco
 
 For stochastic games, evaluation values must represent expected utility or a positive linear transformation of win probability. Merely preserving the order of heuristic scores is not enough, because averaging depends on the numerical distances between values.
 
+## Day 5 — Expectimax (Lecture)
+
+*Source: Day 5 — Expectimax / Logical Reasoning, slides 3–23. The logical-reasoning portion is in [Chapter 7](chapter-07-logical-agents.md).* Sections 7–9 above contain the shared alpha–beta, evaluation, and expectimax foundations.
+
+### 10. Search Budget and Decision Model
+
+Depth-limited search uses true utility at terminal states and heuristic evaluation at nonterminal cutoff states. Alpha–beta preserves the decision for the evaluated tree, but an inaccurate cutoff heuristic can still produce nonoptimal gameplay. Game heuristics do not have A*'s admissibility or nonnegativity requirements. The lecture presents Deep Blue as alpha–beta combined with opening/endgame lookup tables and selective deeper search.
+
+| Node / model | Value backup | Assumption |
+|---|---|---|
+| MAX | maximum child value | agent chooses its best action |
+| MIN | minimum child value | opponent chooses its best action against MAX |
+| CHANCE | probability-weighted average | outcomes follow a specified probability model |
+| Expectimax | MAX + CHANCE | uncertainty or probabilistically modeled opponent |
+| Expectiminimax | MAX + MIN + CHANCE | adversarial choices mixed with random events |
+
+At a chance node, recurse to obtain each successor's value, multiply it by that branch's probability, and sum. The probabilities must be nonnegative and sum to one. An ordinary average is appropriate only when all outcomes are equally likely.
+
+### 11. Where the Probabilities Come From
+
+Probabilities can come from known physical randomness, prior observations, or expert knowledge. A probabilistic opponent model describes how that opponent is expected to act; it need not assign equal probability to every move. Modeling an imperfect opponent as chance is a modeling choice, not proof that the opponent is genuinely random.
+
+Expectimax optimizes expected utility under these assumptions, not the worst-case guarantee supplied by minimax. A poor probability model can therefore recommend a poor move even if the tree calculation is correct.
+
+### 12. Chance Nodes, Cutoffs, and Pruning
+
+A depth cutoff can also limit expectimax, but its heuristic must estimate expected utility on a meaningful numeric scale. Preserving only the ranking of states is insufficient because averaging depends on the distances between values.
+
+The slides' “can't use alpha–beta” summary means **ordinary minimax cutoffs do not apply directly to chance nodes**. One low child cannot determine an average; remaining children may outweigh it. Textbook §6.5 qualifies this: known lower and upper utility bounds, combined with the remaining probability mass, can bound the final expectation and sometimes permit pruning. Randomness and a branching factor for chance outcomes otherwise multiply the search cost.
+
 ## Quick Reference
 
 | Term | Meaning |
@@ -198,3 +228,5 @@ For stochastic games, evaluation values must represent expected utility or a pos
 | **Chance node** | node that averages successor values using outcome probabilities |
 | **Expectimax** | MAX search with chance nodes and expected-value backup |
 | **Expectiminimax** | game-tree search that combines MAX, MIN, and chance nodes |
+| **Probability model** | known randomness, observations, or expert assumptions governing chance branches |
+| **Chance-node pruning** | requires bounds on the remaining probability-weighted values, not ordinary MIN/MAX cutoffs |

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="340" viewBox="0 0 900 340" role="img" aria-labelledby="title desc">
+  <title id="title">Entailment as containment of satisfying model sets</title>
+  <desc id="desc">Within all possible models, the models satisfying the knowledge base are a subset of the models satisfying the entailed conclusion f. Every knowledge-base-compatible world makes f true.</desc>
+  <style>
+    .bg{fill:#ffffff}.universe{fill:#f8fafc;stroke:#64748b}.conclusion{fill:#dbeafe;stroke:#2563eb}.kb{fill:#dcfce7;stroke:#15803d}.label{fill:#0f172a;font-family:system-ui,sans-serif;font-size:20px}.small{font-size:17px;fill:#475569}.line{stroke:#475569;stroke-width:2;fill:none}
+    @media(prefers-color-scheme:dark){.bg{fill:#0f172a}.universe{fill:#172033;stroke:#94a3b8}.conclusion{fill:#163454;stroke:#60a5fa}.kb{fill:#164334;stroke:#4ade80}.label{fill:#f1f5f9}.small{fill:#cbd5e1}.line{stroke:#cbd5e1}}
+  </style>
+  <rect class="bg" width="900" height="340"/>
+  <rect class="universe" x="20" y="18" width="860" height="304" rx="16" stroke-width="2"/>
+  <text class="label" x="44" y="53">All possible models</text>
+  <rect class="conclusion" x="70" y="80" width="475" height="211" rx="30" stroke-width="2"/>
+  <text class="label" x="95" y="113">M(f): worlds where the conclusion is true</text>
+  <rect class="kb" x="140" y="146" width="300" height="111" rx="24" stroke-width="2"/>
+  <text class="label" x="163" y="181">M(KB)</text>
+  <text class="label small" x="163" y="211">Worlds satisfying every</text>
+  <text class="label small" x="163" y="236">fact and rule in the KB</text>
+  <path class="line" d="M 445 201 L 583 201"/>
+  <text class="label" x="600" y="154">KB entails f</text>
+  <text class="label small" x="600" y="191">Every KB-compatible world</text>
+  <text class="label small" x="600" y="218">also makes f true.</text>
+  <text class="label small" x="600" y="262">One counterexample</text>
+  <text class="label small" x="600" y="286">would break entailment.</text>
+</svg>
