@@ -115,6 +115,66 @@ Consistency is the triangle inequality for heuristics. It implies admissibility 
 
 An admissible but inconsistent heuristic can let A\* close a state reached at cost $g=3$ before discovering a path to that same state at cost $g=2$. A graph search that refuses to reopen it may miss the cheaper solution; consistency makes the first **dequeued** path to a state cheapest. Admissibility alone suffices for A\* tree search, not for this no-reopening policy.
 
+### Worked Example — Admissible but Inconsistent
+
+<details>
+<summary>Example — Which heuristic is admissible but not consistent?</summary>
+
+S is the start, G is the goal, and all arrows are directed. Edge costs are actual move costs; each heuristic estimates the remaining cost **from that state all the way to G**.
+
+| Allowed move | Actual edge cost |
+|---|---:|
+| S → A | 2 |
+| S → B | 5 |
+| A → B | 1 |
+| A → G | 6 |
+| B → G | 3 |
+
+Which option is **admissible for every state, but not consistent**? In every option, $h(G)=0$.
+
+| Option | $h(S)$ | $h(A)$ | $h(B)$ |
+|---|---:|---:|---:|
+| **A** | 6 | 4 | 3 |
+| **B** | 6 | 4 | 1 |
+| **C** | 7 | 4 | 3 |
+| **D** | 5 | 5 | 3 |
+
+<details>
+<summary>Solution</summary>
+
+**1. Find each state's cheapest remaining cost.**
+
+| State | Cheapest route to G | True remaining cost |
+|---|---|---:|
+| S | S → A → B → G | 2 + 1 + 3 = **6** |
+| A | A → B → G | 1 + 3 = **4** |
+| B | B → G | **3** |
+| G | Already at the goal | **0** |
+
+**2. Check admissibility: compare each estimate with that same state's true remaining cost.**
+
+- **C fails:** $h(S)=7$ overestimates the true cost of 6.
+- **D fails:** $h(A)=5$ overestimates the true cost of 4.
+- **A and B both pass:** every estimate is no greater than the corresponding true cost. An underestimate is allowed; it does not have to equal the true cost.
+
+**3. Check consistency: compare estimates across each directed edge.**
+
+For A → B, the rule is $h(A) \le 1+h(B)$ because the move costs 1.
+
+| Option | Estimate at A | Step cost + estimate at B | Does this edge pass? |
+|---|---:|---:|---|
+| **A** | 4 | 1 + 3 = 4 | Yes: $4 \le 4$ |
+| **B** | 4 | 1 + 1 = 2 | No: $4 > 2$ |
+
+All other edges pass for both options. **Option A is admissible and consistent; option B is admissible but inconsistent. The answer is B.**
+
+> **Key distinction.** Admissibility checks each estimate against the actual cheapest remaining cost. Consistency checks how estimates change across every arrow: the estimate cannot drop by more than the cost of that move. One failing edge makes the entire heuristic inconsistent.
+
+With $h(G)=0$, consistency implies admissibility, but admissibility does not imply consistency.
+
+</details>
+</details>
+
 ### Choosing Heuristics
 
 A heuristic can be derived from a **relaxed problem** that removes constraints. The relaxed problem's optimal cost is a lower bound on the original cost.
