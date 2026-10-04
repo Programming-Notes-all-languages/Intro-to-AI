@@ -122,6 +122,52 @@ Backing up to D is **not another expansion of D**. B was explored, but it is omi
 </details>
 </details>
 
+### Worked Example — BFS Levels and the Returned Path
+
+<details>
+<summary>Example — Discussion 1, Q1(b): BFS expansion order and returned path</summary>
+
+**Source:** CS 188, Fall 2026 Regular Discussion 1, Q1(b), p. 1 (`cs188-fa26-disc01.pdf`).
+
+![Undirected search graph with Start, Goal, and edge costs](../assets/ch03-disc01-search-graph.svg)
+
+Use the same graph as the DFS example. Find the BFS expansion order and returned path, breaking ties alphabetically and expanding each state only once. This trace uses a **FIFO waiting list** and tests for the goal when selected. Do not add a state again if it is already expanded or waiting.
+
+<details>
+<summary>Solution</summary>
+
+**BFS finishes the entire current level before processing the next level.** Discovering a child does not mean processing it immediately: new states join the back of the waiting list.
+
+| Level | States at that minimum number of edges from Start |
+|---:|---|
+| 0 | Start |
+| 1 | A, B, D |
+| 2 | C, Goal |
+
+D belongs to the same level as A and B because Start connects directly to D. The costs printed on the edges do not change these levels.
+
+| State processed | What happens | Waiting list afterward, next state first |
+|---|---|---|
+| Start | Add A, B, and D alphabetically. | A, B, D |
+| A | Skip Start; discover C and append it. | B, D, C |
+| B | Skip Start; D is already waiting, so do not add it again. | D, C |
+| D | Skip Start and B; C is already waiting. Discover Goal through D and append it. | C, Goal |
+| C | A and D are already expanded; Goal is already waiting. Keep its existing parent, D. | Goal |
+| Goal | The goal test succeeds; return its recorded path. | Empty; stop |
+
+- **Processing order, including Goal:** Start, A, B, D, C, Goal.
+- **Strict expansion order:** Start, A, B, D, C. Goal is selected but its successors need not be expanded.
+- **Returned path:** Start → D → Goal.
+
+**Why not Start → A → C → Goal?** That is a valid route, but it uses 3 edges. Start → D → Goal uses only 2. D is processed before C, so Goal is first discovered through D; C does not replace that shorter route.
+
+> **Processing order is not the solution path.** A and C are explored, but they are not on the returned route. BFS minimizes the number of edges, not the sum of the printed edge costs; it is cost-optimal only when action costs are equal.
+
+**Goal-test convention:** The textbook's optimized BFS checks for a goal when generated. That variant stops during D's expansion, before processing C, and returns the same path. The order above follows the goal-on-selection convention used in this walkthrough.
+
+</details>
+</details>
+
 ## 5. Informed Search
 
 > **Definition (Heuristic).** $h(n)$ estimates the cheapest remaining cost from node $n$ to a goal.
