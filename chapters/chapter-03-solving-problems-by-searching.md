@@ -75,6 +75,53 @@ Common symbols: $b$ = branching factor, $d$ = optimal solution depth, and $m$ = 
 - **Iterative deepening** combines BFS's shallow-solution ordering with DFS's memory use.
 - **Uniform-cost search (UCS)** expands the cheapest partial path and tests for a goal when dequeued, not when generated.
 
+### Worked Example — DFS and Backtracking
+
+<details>
+<summary>Example — Discussion 1, Q1(a): DFS expansion order and returned path</summary>
+
+**Source:** CS 188, Fall 2026 Regular Discussion 1, Q1(a), p. 1 (`cs188-fa26-disc01.pdf`).
+
+![Undirected search graph with Start, Goal, and edge costs](../assets/ch03-disc01-search-graph.svg)
+
+Find the DFS expansion order and returned path. Follow the deepest available branch, break ties alphabetically, and expand each state only once. For this trace, test for the goal when it is selected, not when first generated. Edge costs do **not** determine DFS order.
+
+All connections allow movement in both directions:
+
+| State | Neighbors and actual edge costs |
+|---|---|
+| Start | A (2), B (3), D (5) |
+| A | Start (2), C (4) |
+| B | Start (3), D (4) |
+| C | A (4), D (1), Goal (2) |
+| D | Start (5), B (4), C (1), Goal (5) |
+| Goal | C (2), D (5) |
+
+<details>
+<summary>Solution</summary>
+
+**Expansion order** records the states whose successors are processed. The **returned path** is the connected route from Start to Goal; it need not include every explored state.
+
+| Step | State processed | Reasoning |
+|---:|---|---|
+| 1 | Start | Its neighbors are A, B, and D. Choose A alphabetically. |
+| 2 | A | Skip already-expanded Start; continue deeper to C. |
+| 3 | C | Skip A. Choose D before Goal alphabetically. |
+| 4 | D | Skip Start and C. Choose B before Goal alphabetically. |
+| 5 | B | Both neighbors, Start and D, are already expanded. This branch has no new state to explore. |
+| 6 | Goal | Back up to D and explore its remaining neighbor, Goal. Stop successfully. |
+
+- **Processing order, including Goal:** Start, A, C, D, B, Goal.
+- **Strict expansion order:** Start, A, C, D, B. Goal is selected and passes the goal test, so its successors need not be expanded. If a worksheet includes Goal in its expansion-order convention, use the processing order above.
+- **Returned path:** Start → A → C → D → Goal.
+
+> **Why B does not trap the search.** B is a dead end for this search, not proof that Goal is unreachable. DFS backs up to the last branch point, D, and tries Goal. Expanding each state only once prevents processing D's neighbors all over again; it does not forbid backtracking to unfinished work.
+
+Backing up to D is **not another expansion of D**. B was explored, but it is omitted from the returned path because it is not on the successful branch. In a stack implementation, unfinished branches remain waiting in the frontier; the algorithm need not physically move an agent backward.
+
+</details>
+</details>
+
 ## 5. Informed Search
 
 > **Definition (Heuristic).** $h(n)$ estimates the cheapest remaining cost from node $n$ to a goal.

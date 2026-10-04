@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" role="img" aria-labelledby="title desc">
+  <title id="title">Discussion 1 search graph</title>
+  <desc id="desc">Undirected graph with Start, A, B, C, D, and Goal. Edge costs: Start to A 2, Start to B 3, Start to D 5, A to C 4, B to D 4, C to D 1, C to Goal 2, D to Goal 5. Costs do not determine DFS order.</desc>
+  <style>
+    .background{fill:#ffffff}
+    text{font:600 20px system-ui,sans-serif;fill:#24292f}
+    .caption{font-size:16px;font-weight:400}
+    .edge{stroke:#57606a;stroke-width:2.5;fill:none}
+    .node{fill:#f6f8fa;stroke:#57606a;stroke-width:2.5}
+    .endpoint{fill:#ddf4ff;stroke:#0969da;stroke-width:2.5}
+    .cost-bg{fill:#ffffff}
+    .cost{font-size:18px;font-weight:400}
+    @media(prefers-color-scheme:dark){
+      .background,.cost-bg{fill:#0d1117}
+      text{fill:#c9d1d9}
+      .edge{stroke:#8b949e}
+      .node{fill:#161b22;stroke:#8b949e}
+      .endpoint{fill:#0c2d6b;stroke:#58a6ff}
+    }
+  </style>
+  <rect class="background" width="900" height="430" rx="8"/>
+  <text x="450" y="32" text-anchor="middle">Search graph — DFS uses depth, not edge cost</text>
+  <g class="edge">
+    <line x1="175" y1="205" x2="320" y2="100"/>
+    <line x1="175" y1="205" x2="175" y2="345"/>
+    <line x1="175" y1="205" x2="565" y2="345"/>
+    <line x1="320" y1="100" x2="565" y2="205"/>
+    <line x1="175" y1="345" x2="565" y2="345"/>
+    <line x1="565" y1="205" x2="565" y2="345"/>
+    <line x1="565" y1="205" x2="735" y2="100"/>
+    <line x1="565" y1="345" x2="735" y2="100"/>
+  </g>
+  <g class="cost-bg">
+    <rect x="232" y="137" width="30" height="28" rx="4"/>
+    <rect x="145" y="262" width="30" height="28" rx="4"/>
+    <rect x="355" y="261" width="30" height="28" rx="4"/>
+    <rect x="430" y="139" width="30" height="28" rx="4"/>
+    <rect x="355" y="331" width="30" height="28" rx="4"/>
+    <rect x="535" y="262" width="30" height="28" rx="4"/>
+    <rect x="638" y="140" width="30" height="28" rx="4"/>
+    <rect x="645" y="214" width="30" height="28" rx="4"/>
+  </g>
+  <g class="cost" text-anchor="middle">
+    <text x="247" y="158">2</text><text x="160" y="283">3</text>
+    <text x="370" y="282">5</text><text x="445" y="160">4</text>
+    <text x="370" y="352">4</text><text x="550" y="283">1</text>
+    <text x="653" y="161">2</text><text x="660" y="235">5</text>
+  </g>
+  <circle class="endpoint" cx="175" cy="205" r="43"/>
+  <circle class="node" cx="320" cy="100" r="40"/>
+  <circle class="node" cx="175" cy="345" r="40"/>
+  <circle class="node" cx="565" cy="205" r="40"/>
+  <circle class="node" cx="565" cy="345" r="40"/>
+  <circle class="endpoint" cx="735" cy="100" r="43"/>
+  <g text-anchor="middle" dominant-baseline="middle">
+    <text x="175" y="205">Start</text><text x="320" y="100">A</text>
+    <text x="175" y="345">B</text><text x="565" y="205">C</text>
+    <text x="565" y="345">D</text><text x="735" y="100">Goal</text>
+  </g>
+  <text class="caption" x="450" y="407" text-anchor="middle">Lines allow movement both ways; numbers are actual travel costs.</text>
+</svg>
