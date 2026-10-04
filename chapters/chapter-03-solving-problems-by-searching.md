@@ -168,6 +168,47 @@ D belongs to the same level as A and B because Start connects directly to D. The
 </details>
 </details>
 
+### Worked Example — UCS and Cheaper-Route Updates
+
+<details>
+<summary>Example — Discussion 1, Q1(c): UCS expansion order and returned path</summary>
+
+**Source:** CS 188, Fall 2026 Regular Discussion 1, Q1(c), p. 1 (`cs188-fa26-disc01.pdf`).
+
+![Undirected search graph with Start, Goal, and edge costs](../assets/ch03-disc01-search-graph.svg)
+
+Find the UCS expansion order and returned path on the same graph. Select the waiting state with the smallest total cost from Start, breaking equal-cost state ties alphabetically. Expand each state only once, update a waiting state's cost and parent when a cheaper route is found, and stop when Goal is **selected**, not merely generated. For equal-cost routes to the same state, retain the first route found.
+
+<details>
+<summary>Solution</summary>
+
+**UCS chooses by cost spent so far**, $g(n)$. The waiting list contains alternatives, not one route being physically traveled; selecting B after A does not require an A → B edge.
+
+| State processed | What happens | Waiting list afterward, cheapest first |
+|---|---|---|
+| Start, cost 0 | Discover A at 2, B at 3, and D at 5. | A (2), B (3), D (5) |
+| A, cost 2 | Skip Start. Discover C through A at 2 + 4 = 6. B and D remain waiting. | B (3), D (5), C (6) |
+| B, cost 3 | Skip Start. Reaching D through B costs 3 + 4 = 7, worse than its existing cost of 5. Keep Start as D's parent. | D (5), C (6) |
+| D, cost 5 | Skip Start and B. Reaching C through D costs 5 + 1 = 6, tying its existing cost; retain A as C's parent. Discover Goal through D at 5 + 5 = 10. | C (6), Goal (10) |
+| C, cost 6 | Skip A and D. Reaching Goal through C costs 6 + 2 = 8, cheaper than 10. Update Goal's cost to 8 and its parent to C. | Goal (8) |
+| Goal, cost 8 | Goal is now the cheapest waiting state. Select it, pass the goal test, and return the recorded path. | Empty; stop |
+
+- **Processing order, including Goal:** Start, A, B, D, C, Goal.
+- **Strict expansion order:** Start, A, B, D, C. Goal is selected but its successors need not be expanded.
+- **Returned path:** Start → A → C → Goal.
+- **Total cost:** 2 + 4 + 2 = **8**.
+
+Follow the final parent links backward: Goal's parent is C, C's parent is A, and A's parent is Start. Reverse that chain to obtain the returned path; B and D were explored but are not on this route.
+
+> **The crucial update.** Finding Goal through D does not end UCS: Goal costs 10 while C costs only 6. Exploring C reveals a cheaper route to Goal, reducing its cost to 8 and changing its parent from D to C. BFS keeps the first-discovery parent; UCS replaces it when a cheaper route is found.
+
+**Equal-cost alternative:** Start → D → C → Goal also costs 5 + 1 + 2 = **8**. It is another optimal route. This trace returns the route through A because C was first reached through A and an equal-cost route does not replace its parent.
+
+For this graph, BFS and UCS have the same processing order under goal-on-selection, but different returned paths: BFS returns Start → D → Goal (2 edges, cost 10), while UCS returns Start → A → C → Goal (3 edges, cost 8). BFS minimizes the number of edges; UCS minimizes total edge cost.
+
+</details>
+</details>
+
 ## 5. Informed Search
 
 > **Definition (Heuristic).** $h(n)$ estimates the cheapest remaining cost from node $n$ to a goal.
