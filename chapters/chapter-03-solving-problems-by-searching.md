@@ -266,6 +266,56 @@ The levels are Start; then A, B, D; then C, F; then E, H, Goal. These groups are
 </details>
 </details>
 
+### Worked Example — Different Orders, Same BFS and DFS Path
+
+<details>
+<summary>Example — Search practice 2: compare BFS and DFS on a new graph</summary>
+
+**Source:** Original practice graph created to extend the supplied CS 188 search worksheet. This is a different graph from the harder DFS/FIFO BFS example above.
+
+![Second practice graph, with Start in the middle and Goal on the right](../assets/ch03-search-practice-2.png)
+
+Find the **processing order** and **returned path** for both BFS and DFS.
+
+- All edges allow movement in both directions. Ignore the printed edge costs for these two algorithms.
+- **BFS:** Use FIFO; append new neighbors alphabetically. Do not add a state again if it is expanded or waiting, and retain its first-discovery parent. Do not globally sort the waiting list.
+- **DFS:** Follow the current branch deeper, trying unexpanded neighbors alphabetically. Expand each state only once; a state merely waiting on another branch is not yet expanded. Backtrack when no unexpanded neighbors remain.
+- Both algorithms stop when Goal is selected. Processing orders below include Goal; strict expansion orders omit it because the goal test succeeds before its successors are expanded.
+
+<details>
+<summary>Solution</summary>
+
+| Algorithm | Processing order, including Start and Goal |
+|---|---|
+| **BFS** | Start, A, B, C, D, E, H, F, Goal |
+| **DFS** | Start, A, D, B, C, H, E, F, Goal |
+
+**BFS waiting-list trace**
+
+| State processed | What happens | Waiting list afterward, next state first |
+|---|---|---|
+| Start | Append A, B, and C. | A, B, C |
+| A | Append new neighbors D and E; skip Start. | B, C, D, E |
+| B | Start is expanded; C and D are already waiting. Add nothing. | C, D, E |
+| C | Skip Start and B; append H. | D, E, H |
+| D | Skip A and B; append F. | E, H, F |
+| E | A is expanded and H is already waiting. Add nothing. | H, F |
+| H | C and E are expanded. Add nothing. | F |
+| F | Skip D; append Goal. | Goal |
+| Goal | Select Goal and stop. | Empty; stop |
+
+**DFS branch and backtracking.** Start chooses A before B and C. A chooses D before E. D chooses B before F; the branch then continues through C, H, and E. At E, both neighbors, A and H, are already expanded. Backtrack through H, C, and B to D, then explore F and Goal. These returns to branch points are not repeated expansions.
+
+**Both returned paths are Start → A → D → F → Goal.**
+
+- **BFS:** A first discovers D, D discovers F, and F discovers Goal. Follow those parent links backward and reverse them to obtain the path.
+- **DFS:** The branch through B, C, H, and E finishes without reaching Goal. Those states are explored but omitted from the successful route through D → F → Goal.
+
+> **Different processing orders can produce the same returned path.** Processing order records exploration; the solution path records only the connected route to Goal. Neither algorithm promises minimum total edge cost on this weighted graph; BFS minimizes the number of edges.
+
+</details>
+</details>
+
 ### Worked Example — UCS and Cheaper-Route Updates
 
 <details>
