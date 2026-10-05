@@ -205,6 +205,45 @@ A depth cutoff can also limit expectimax, but its heuristic must estimate expect
 
 The slides' “can't use alpha–beta” summary means **ordinary minimax cutoffs do not apply directly to chance nodes**. One low child cannot determine an average; remaining children may outweigh it. Textbook §6.5 qualifies this: known lower and upper utility bounds, combined with the remaining probability mass, can bound the final expectation and sometimes permit pruning. Randomness and a branching factor for chance outcomes otherwise multiply the search cost.
 
+### Worked Example — Expectimax Values and Pruning
+
+<details>
+<summary>Example — Discussion 3, Q1(c)–(d): uniform chance nodes and a MAX root</summary>
+
+**Source:** CS 188, Fall 2026 Regular Discussion 3, Q1(c)–(d), p. 1 (`cs188-fa26-disc03.pdf`).
+
+The root is a **MAX node** with three **chance-node children**. Each chance node chooses uniformly among its three terminal outcomes:
+
+| Root branch | Terminal outcome values |
+|---|---|
+| Left | 10, 8, 3 |
+| Middle | 2, 15, 7 |
+| Right | 6, 5, 4 |
+
+**(c)** Fill in the expectimax value of each node. **(d)** Which nodes can ordinary alpha–beta pruning skip? Explain why.
+
+<details>
+<summary>Solution</summary>
+
+**1. Average the outcomes at each chance node.** Each outcome has probability one third, so add the three values and divide by 3. The leaves retain their given utility values.
+
+| Chance node | Calculation | Expected value |
+|---|---|---:|
+| Left | (10 + 8 + 3) / 3 = 21 / 3 | **7** |
+| Middle | (2 + 15 + 7) / 3 = 24 / 3 | **8** |
+| Right | (6 + 5 + 4) / 3 = 15 / 3 | **5** |
+
+**2. Take the maximum at the root.** MAX compares 7, 8, and 5, chooses the **middle branch**, and has value **8**. Chance nodes average; MAX nodes still maximize.
+
+> **Expected is not guaranteed.** The middle branch has an expected payoff of 8, but its actual outcome is 2, 15, or 7, each equally likely. MAX chooses the best average, not a guaranteed payoff of 8.
+
+**3. No nodes can be pruned using ordinary alpha–beta pruning in this tree.** A MIN node's running minimum can only decrease, which supports ordinary minimax cutoffs. A chance node instead uses an average: an unexamined outcome can change that average and potentially which branch MAX chooses. Evaluate all nine terminal outcomes for the exact values here.
+
+This does **not** mean expectimax can never be pruned. Specialized methods can use known lower and upper utility bounds and remaining probability mass to prove a branch cannot change the decision; those are not the ordinary MIN/MAX alpha–beta rules requested here.
+
+</details>
+</details>
+
 ## Quick Reference
 
 | Term | Meaning |
