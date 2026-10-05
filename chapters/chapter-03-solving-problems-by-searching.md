@@ -122,6 +122,60 @@ Backing up to D is **not another expansion of D**. B was explored, but it is omi
 </details>
 </details>
 
+### Worked Example — Harder DFS with Cycles
+
+<details>
+<summary>Example — Harder DFS practice: cycles, backtracking, and the returned path</summary>
+
+**Source:** Original practice problem modeled on the DFS graph-search question in CS 188, Fall 2026 Regular Discussion 1. This is a new graph, not another question from the supplied PDF.
+
+![Harder undirected DFS graph with Start, A, B, C, D, E, F, H, and Goal](../assets/ch03-harder-dfs.png)
+
+Find the **processing order, including Start and Goal**, and then the **returned path**.
+
+- Every connection allows movement in both directions; numbers are actual edge costs, which DFS ignores.
+- Follow a branch deeper before returning to unfinished branches. At each state, try its unexpanded neighbors alphabetically.
+- Expand each state only once. Skip already-expanded states, not every state merely waiting on another branch; a stack may contain alternative paths to the same state.
+- When no unexpanded neighbors remain, backtrack without expanding the branch-point state again. Stop when Goal is selected.
+
+| State | Neighbors and actual edge costs |
+|---|---|
+| Start | A (2), B (1), D (4) |
+| A | Start (2), C (5) |
+| B | Start (1), D (2) |
+| C | A (5), D (2), E (3), H (4) |
+| D | Start (4), B (2), C (2), F (1) |
+| E | C (3), F (2), H (2) |
+| F | D (1), E (2), Goal (6) |
+| H | C (4), E (2) |
+| Goal | F (6) |
+
+<details>
+<summary>Solution</summary>
+
+| State processed | Next step |
+|---|---|
+| Start | Choose A before B and D. |
+| A | Skip Start and continue to C. |
+| C | Skip A; choose D before E and H. |
+| D | Skip Start and C; choose B before F. |
+| B | Start and D are already expanded. Backtrack to D and continue to F. |
+| F | Skip D; choose E before Goal. |
+| E | C and F are already expanded. H remains unexpanded, so continue to H. |
+| H | C and E are already expanded. Backtrack through E to F, where Goal is still available. |
+| Goal | Select Goal and stop successfully. |
+
+- **Processing order, including Goal:** Start, A, C, D, B, F, E, H, Goal.
+- **Strict expansion order:** Start, A, C, D, B, F, E, H. Goal passes the goal test without expanding its successors.
+- **Returned path:** Start → A → C → D → F → Goal.
+
+> **Do not skip H.** Reaching E does not finish its branch: E still has an unexpanded neighbor, H. Explore H before backing up to F and trying Goal. There is no direct E → Goal edge.
+
+**B, E, and H were explored but are not on the returned path.** B's branch finishes and returns to D; the E–H branch finishes and returns to F. The successful route uses D → F → Goal instead. Backtracking does not add repeated states to the processing order, and exploring a dead end does not mean Goal is unreachable.
+
+</details>
+</details>
+
 ### Worked Example — BFS Levels and the Returned Path
 
 <details>
