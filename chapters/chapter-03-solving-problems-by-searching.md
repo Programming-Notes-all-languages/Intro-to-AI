@@ -222,6 +222,50 @@ D belongs to the same level as A and B because Start connects directly to D. The
 </details>
 </details>
 
+### Worked Example — Harder BFS and FIFO Order
+
+<details>
+<summary>Example — Harder BFS practice: levels versus alphabetical labels</summary>
+
+**Source:** Original FIFO BFS practice using the graph from the harder DFS example above, modeled on the supplied CS 188 search worksheet.
+
+![Same harder undirected search graph, now used for BFS](../assets/ch03-harder-dfs.png)
+
+Find the **BFS processing order, including Start and Goal**. Every edge allows movement in both directions; ignore the edge costs.
+
+- Use a **FIFO waiting list**: remove the first waiting state and append newly discovered states at the back.
+- Add each state's new neighbors alphabetically, but do not reorder states already waiting.
+- Do not add a state again if it is already expanded or waiting. Stop when Goal is selected, not when first discovered.
+
+<details>
+<summary>Solution</summary>
+
+**BFS finishes the current level before processing deeper states.** A state's alphabetical label does not determine its level.
+
+| State processed | What happens | Waiting list afterward, next state first |
+|---|---|---|
+| Start | Discover A, B, and D. | A, B, D |
+| A | Skip Start; append C. | B, D, C |
+| B | Start is expanded and D is already waiting; add nothing. | D, C |
+| D | Start and B are expanded; C is already waiting. Append F. | C, F |
+| C | A and D are expanded. Append new neighbors E and H alphabetically. | F, E, H |
+| F | D is expanded and E is already waiting. Append Goal. | E, H, Goal |
+| E | C and F are expanded; H is already waiting. Add nothing. | H, Goal |
+| H | C and E are expanded; add nothing. | Goal |
+| Goal | Select Goal and stop successfully. | Empty; stop |
+
+- **Processing order, including Goal:** Start, A, B, D, C, F, E, H, Goal.
+- **Strict expansion order:** Start, A, B, D, C, F, E, H. Goal passes the goal test without expanding its successors.
+
+> **Why not alphabetical order across the graph?** D comes before C because D was waiting before A discovered C. F comes before E because F was waiting before C discovered E. H is included before Goal because H entered the waiting list first.
+
+The levels are Start; then A, B, D; then C, F; then E, H, Goal. These groups are listed in **FIFO processing order**, not globally alphabetical order.
+
+**Tie-policy distinction:** Alphabetically generating each state's new neighbors is not the same as selecting the alphabetically earliest state among all waiting states at the same depth. This exercise specifies FIFO. A source requiring global same-depth alphabetical ties can produce a different order; do not silently replace one policy with the other.
+
+</details>
+</details>
+
 ### Worked Example — UCS and Cheaper-Route Updates
 
 <details>
