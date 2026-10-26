@@ -126,6 +126,39 @@ $$
 
 A **proper policy** reaches a terminal state with probability one. Undiscounted analysis also needs suitable termination and finite-return conditions; the mere existence of a terminal state is not enough. Average reward per step is a different objective from discounted total reward.
 
+<details>
+<summary>Example — Rewards now or later?</summary>
+
+*Original practice modeled on Day 9's reward-sequence discounting slides 58–60.*
+
+A robot must choose between two plans with **guaranteed rewards**:
+
+- **Quick:** receive 6 points, then 0, then 0.
+- **Patient:** receive 0 points, then 0, then 20.
+
+Each plan ends after three steps. The discount factor is $\gamma=0.5$: the first reward is undiscounted, the second is multiplied by $\gamma$, and the third by $\gamma^2$.
+
+Which plan gives the greater discounted total reward? Show the total for each plan.
+
+<details>
+<summary>Solution</summary>
+
+Apply the discount according to **when each reward arrives**, not according to how large it is:
+
+$$
+\begin{aligned}
+G_{\text{Quick}} &= 6+0.5(0)+(0.5)^2(0)=6,\\
+G_{\text{Patient}} &= 0+0.5(0)+(0.5)^2(20)=5.
+\end{aligned}
+$$
+
+Omitting the discount factors on the zero rewards gives the same totals, because those terms remain zero. The 20-point reward is discounted **twice**, not once, because it arrives in the third position.
+
+**Choose Quick: 6 versus 5.** Patient gives more undiscounted points, but the delayed reward is worth less under this discount factor.
+
+</details>
+</details>
+
 ### 7. State Values, Q-Values, and the Bellman Equation
 
 A value is an expected future return, not an immediate reward or a probability of success.
