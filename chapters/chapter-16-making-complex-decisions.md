@@ -143,14 +143,7 @@ Which plan gives the greater discounted total reward? Show the total for each pl
 <details>
 <summary>Solution</summary>
 
-Apply the discount according to **when each reward arrives**, not according to how large it is:
-
-$$
-\begin{aligned}
-G_{\text{Quick}} &= 6+0.5(0)+(0.5)^2(0)=6,\\
-G_{\text{Patient}} &= 0+0.5(0)+(0.5)^2(20)=5.
-\end{aligned}
-$$
+Apply the discount according to **when each reward arrives**, not according to how large it is. The full calculations are shown immediately below the example dropdown.
 
 Omitting the discount factors on the zero rewards gives the same totals, because those terms remain zero. The 20-point reward is discounted **twice**, not once, because it arrives in the third position.
 
@@ -158,6 +151,15 @@ Omitting the discount factors on the zero rewards gives the same totals, because
 
 </details>
 </details>
+
+**Discounted calculations for the example:**
+
+$$
+\begin{aligned}
+G_{\text{Quick}} &= 6+0.5(0)+(0.5)^2(0)=6,\\
+G_{\text{Patient}} &= 0+0.5(0)+(0.5)^2(20)=5.
+\end{aligned}
+$$
 
 ### 7. State Values, Q-Values, and the Bellman Equation
 
