@@ -145,6 +145,50 @@ $$
 P(-y\mid +x)=\frac{0.3}{0.2+0.3}=\frac{3}{5}.
 $$
 
+<details>
+<summary>Example — Rain overall versus rain given heavy traffic</summary>
+
+*Original practice modeled on the Day 8–9 joint-table conditional-probability exercises.*
+
+An agent uses this joint probability model:
+
+| Rain | Traffic | Joint probability |
+|---|---|---:|
+| Yes | Heavy | 0.30 |
+| Yes | Light | 0.10 |
+| No | Heavy | 0.15 |
+| No | Light | 0.45 |
+
+The agent observes that **traffic is heavy**. What is the probability that it is raining, given that observation?
+
+<details>
+<summary>Solution</summary>
+
+**Answer: $2/3 \approx 0.667$.**
+
+The observation restricts the possibilities to the **heavy-traffic rows**. Ignore the light-traffic rows for this conditional calculation:
+
+| Rain | Traffic | Retained probability mass |
+|---|---|---:|
+| Yes | Heavy | 0.30 |
+| No | Heavy | 0.15 |
+
+Ask: **Of the heavy-traffic probability mass, what fraction includes rain?** Apply the conditional-probability definition above: divide the probability of rain AND heavy traffic by the total probability of heavy traffic.
+
+| Quantity | Calculation | Result |
+|---|---|---|
+| Heavy traffic, the evidence | 0.30 + 0.15 | 0.45 |
+| Rain AND heavy traffic | the matching joint-table entry | 0.30 |
+| Rain GIVEN heavy traffic | 0.30 / 0.45 | 2/3, approximately 0.667 |
+
+**Why 0.4 answers a different question:** adding 0.30 + 0.10 gives the probability of **rain overall**, including light traffic. It does not use the observation that traffic is heavy.
+
+- **Rain overall:** add every rain row.
+- **Rain given heavy traffic:** retain only heavy-traffic rows, then normalize by their total.
+
+</details>
+</details>
+
 ## 7. Inference by Enumeration: Select → Sum → Normalize
 
 > **Definition (Probabilistic inference).** Computing a desired probability from known probabilities, usually a posterior given observed evidence.
