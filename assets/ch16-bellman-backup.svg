@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="325" viewBox="0 0 900 325" role="img" aria-labelledby="title desc">
+  <title id="title">One Bellman backup: look ahead, average, then maximize</title>
+  <desc id="desc">For each action from a state, combine transition rewards with discounted old successor values, average using transition probabilities, then select the highest action value. Every backup in one value-iteration sweep reads the same previous value table.</desc>
+  <style>
+    :root { color-scheme: light dark; }
+    .bg { fill: #ffffff; } .box { fill: #edf3fa; stroke: #4c6684; stroke-width: 2; }
+    .accent { fill: #e7f5ee; stroke: #36815b; stroke-width: 2; }
+    text { fill: #17283b; font: 18px system-ui, sans-serif; text-anchor: middle; }
+    .heading { font-size: 21px; font-weight: 650; } .small { font-size: 16px; }
+    .arrow { fill: none; stroke: #4c6684; stroke-width: 2.5; marker-end: url(#arrow); }
+    .tip { fill: #4c6684; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #101922; } .box { fill: #1d2b3c; stroke: #93b5da; }
+      .accent { fill: #18392e; stroke: #7dd9ab; } text { fill: #e9f1fa; }
+      .arrow { stroke: #93b5da; } .tip { fill: #93b5da; }
+    }
+  </style>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path class="tip" d="M0 0 L9 4.5 L0 9 Z"/></marker></defs>
+  <rect class="bg" width="900" height="325" rx="12"/>
+  <text class="heading" x="450" y="37">One Bellman backup for a state</text>
+  <rect class="box" x="20" y="76" width="260" height="137" rx="12"/>
+  <text class="heading" x="150" y="108">1. Look ahead</text>
+  <text x="150" y="143">For each successor:</text>
+  <text x="150" y="171">transition reward plus</text>
+  <text x="150" y="198">discounted old value</text>
+  <path class="arrow" d="M284 144 H316"/>
+  <rect class="box" x="323" y="76" width="254" height="137" rx="12"/>
+  <text class="heading" x="450" y="108">2. Average outcomes</text>
+  <text x="450" y="143">For each action:</text>
+  <text x="450" y="171">weight successors by</text>
+  <text x="450" y="198">transition probability</text>
+  <path class="arrow" d="M582 144 H614"/>
+  <rect class="accent" x="621" y="76" width="259" height="137" rx="12"/>
+  <text class="heading" x="750" y="108">3. Choose the best</text>
+  <text x="750" y="143">Take the maximum</text>
+  <text x="750" y="171">action value to obtain</text>
+  <text x="750" y="198">the new state value</text>
+  <text class="small" x="450" y="259">The agent chooses an action, not which random successor occurs.</text>
+  <text class="small" x="450" y="290">Synchronous sweep: every state reads the same previous value table.</text>
+</svg>

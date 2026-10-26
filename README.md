@@ -15,16 +15,16 @@ Textbook: *Artificial Intelligence: A Modern Approach* (4th ed.), Russell & Norv
 | 4 | Search in complex environments: local search, continuous spaces | [Chapter 4](chapters/chapter-04-search-in-complex-environments.md) (§4.1 · Week 3) |
 | 5 | Constraint satisfaction: backtracking, propagation | — |
 | 6 | Adversarial search: game theory, alpha-beta pruning, expectimax | [Chapter 6](chapters/chapter-06-adversarial-search-and-games.md) (§§6.1–6.3, §6.5 · Days 4–5 lectures) |
-| 7 | Logical agents: knowledge bases, propositional logic, inference | [Chapter 7](chapters/chapter-07-logical-agents.md) (§7.1, §§7.4.1–7.4.2 · Day 5 lecture) |
+| 7 | Logical agents: semantics, inference, soundness/completeness, Horn clauses, resolution | [Chapter 7](chapters/chapter-07-logical-agents.md) (§7.1, §§7.3–7.5 selections · Days 5, 7–9) |
 | 8 | First-order logic: syntax and semantics | — |
 | 9 | Inference in FOL: unification, resolution | — |
 | 10 | Knowledge representation: ontologies, events | — |
 | 11 | Automated planning | — |
-| 12 | Quantifying uncertainty: probability, Bayes' rule | — |
+| 12 | Quantifying uncertainty: joint/conditional distributions, enumeration, Bayes' rule | [Chapter 12](chapters/chapter-12-quantifying-uncertainty.md) (§§12.1–12.3, §12.5 · Days 8–9) |
 | 13 | Probabilistic reasoning: Bayesian networks | — |
 | 14 | Reasoning over time: HMMs, Kalman filters | — |
 | 15 | Simple decisions: utility theory | — |
-| 16 | Complex decisions: MDPs, POMDPs | — |
+| 16 | Making complex decisions: MDPs, policies, Bellman equations, value iteration | [Chapter 16](chapters/chapter-16-making-complex-decisions.md) (§16.1 selections, §16.2.1 · Day 9) |
 | 17 | Multiagent decision making | — |
 | 18 | Probabilistic programming | — |
 | 19 | Learning from examples: supervised methods | — |
