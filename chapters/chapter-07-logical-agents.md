@@ -222,6 +222,49 @@ A rule is truth-preserving if every model satisfying all premises also satisfies
 
 For the lecture's rain rules, knowing Rain and Rain implies Wet allows Wet to be added; knowing Wet implies Slippery then allows Slippery to be added. This is a chain of rule applications, not enumeration of every possible world.
 
+<details>
+<summary>Example — What follows from the knowledge base?</summary>
+
+*Original practice modeled on the Day 8 inference-rule slides.*
+
+Assume every statement below is true:
+
+1. $A \lor B$
+2. $\neg A$
+3. $B \Rightarrow C$
+4. $D \Rightarrow C$
+
+Which conclusion must be true in every model satisfying this knowledge base?
+
+| Choice | Conclusion |
+|---|---|
+| **A** | $C$ |
+| **B** | $D$ |
+| **C** | $\neg D$ |
+| **D** | $A \land C$ |
+
+<details>
+<summary>Solution</summary>
+
+**Correct answer: choice A, the statement $C$.**
+
+| Step | Reasoning | Inference rule |
+|---|---|---|
+| 1 | $A \lor B$ requires at least one to be true. Since $\neg A$ makes $A$ false, $B$ must be true. | Disjunctive syllogism |
+| 2 | $B$ is true and $B \Rightarrow C$ is given, so $C$ must be true. | Modus ponens |
+
+**Why neither $D$ nor $\neg D$ follows:** the rule $D \Rightarrow C$ says that $D$ is sufficient for $C$, not that $D$ is necessary. A true $C$ does not tell us whether $D$ is true. Both assignments below satisfy every premise:
+
+| $A$ | $B$ | $C$ | $D$ |
+|---|---|---|---|
+| F | T | T | F |
+| F | T | T | T |
+
+The conclusion $A \land C$ cannot hold because $A$ is false. Distinguish the **proposition symbol $C$** from the **answer label C**, which names $\neg D$ in this question.
+
+</details>
+</details>
+
 ### 12. Derivation, Soundness, and Completeness
 
 > **Definition (Derivation).** A formula is derivable when the chosen inference procedure can produce it from the KB. Write $\mathrm{KB} \vdash_i f$ for derivation by procedure $i$.
