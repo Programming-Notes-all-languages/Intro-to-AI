@@ -401,6 +401,28 @@ $$
 
 Store each outer conjunct as a separate KB clause: all conjuncts must hold. Direct equivalence-preserving distribution can enlarge a formula exponentially; CNF conversion is not guaranteed to be a small rewrite.
 
+<details>
+<summary>Example — Convert an implication to CNF</summary>
+
+*Original practice modeled on the Day 8 CNF-conversion slides.*
+
+Convert $(P \lor Q) \Rightarrow (R \land S)$ into an equivalent CNF using only NOT, OR, and AND.
+
+<details>
+<summary>Solution</summary>
+
+1. **Eliminate the implication** with $A \Rightarrow B \equiv \neg A \lor B$:
+   $(P \lor Q) \Rightarrow (R \land S) \equiv \neg(P \lor Q) \lor (R \land S)$.
+2. **Push the negation inward** with De Morgan's law, $\neg(P \lor Q) \equiv \neg P \land \neg Q$:
+   $(\neg P \land \neg Q) \lor (R \land S)$.
+3. **Distribute OR over AND.** Pair each left-side conjunct with each right-side conjunct:
+   $(\neg P \lor R) \land (\neg P \lor S) \land (\neg Q \lor R) \land (\neg Q \lor S)$.
+
+The result is an AND of clauses, each clause is an OR of literals, and every negation applies to a single proposition symbol.
+
+</details>
+</details>
+
 ### 19. Entailment as Unsatisfiability
 
 > **Definition (Satisfiable / unsatisfiable).** A formula is satisfiable if at least one model makes it true; it is unsatisfiable if none does. A valid formula, or tautology, is true in every model.
