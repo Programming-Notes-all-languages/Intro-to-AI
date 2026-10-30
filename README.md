@@ -24,14 +24,14 @@ Textbook: *Artificial Intelligence: A Modern Approach* (4th ed.), Russell & Norv
 | 13 | Probabilistic reasoning: Bayesian networks | — |
 | 14 | Reasoning over time: HMMs, Kalman filters | — |
 | 15 | Simple decisions: utility theory | — |
-| 16 | Making complex decisions: MDPs, policies, Bellman equations, value iteration | [Chapter 16](chapters/chapter-16-making-complex-decisions.md) (§16.1 selections, §16.2.1 · Day 9) |
+| 16 | Making complex decisions: MDPs, policies, Bellman equations, value and policy iteration | [Chapter 16](chapters/chapter-16-making-complex-decisions.md) (§16.1 selections, §§16.2.1–16.2.2 · Days 9–10) |
 | 17 | Multiagent decision making | — |
 | 18 | Probabilistic programming | — |
 | 19 | Learning from examples: supervised methods | — |
 | 20 | Knowledge in learning | — |
 | 21 | Learning probabilistic models: EM algorithm | — |
 | 22 | Deep learning: CNNs, RNNs, backpropagation | — |
-| 23 | Reinforcement learning | — |
+| 23 | Reinforcement learning: model-based learning, TD, Q-learning, exploration | [Chapter 23](chapters/chapter-23-reinforcement-learning.md) (§§23.1–23.3 selections · Day 10) |
 | 24–25 | Natural language processing & transformers | — |
 | 26 | Robotics | — |
 | 27 | Computer vision | — |

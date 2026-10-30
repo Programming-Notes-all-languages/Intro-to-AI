@@ -2,9 +2,9 @@
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
 
-**Sections:** 16.1 Sequential Decision Problems, introduction and §§16.1.1–16.1.2 (pp. 552–559) · 16.2.1 Value Iteration (pp. 562–566).
+**Sections:** 16.1 Sequential Decision Problems, introduction and §§16.1.1–16.1.2 (pp. 552–559) · 16.2.1 Value Iteration (pp. 562–566) · 16.2.2 Policy Iteration (pp. 566–568).
 
-**Class notes:** *Day 9 — Probability Theory + Markov Decision Processes*, slides 44–90.
+**Class notes:** *Day 9 — Probability Theory + Markov Decision Processes*, slides 44–90 · *Day 10 — MDP & Value Iteration*, slides 1–57. Reinforcement learning from the rest of Day 10 appears in [Chapter 23](chapter-23-reinforcement-learning.md).
 
 ## Section 16.1 — Sequential Decision Problems
 
@@ -269,6 +269,41 @@ A **policy can become optimal before its numerical values converge**: the best a
 - **Q-values:** one expected return per state–action pair; compare choices directly.
 - **Policy:** an action recommendation per state; describes behavior, not its numerical quality.
 
+## Section 16.2.2 — Policy Iteration
+
+### 12. Day 10 — Evaluate, Then Improve
+
+Value iteration chooses a best action in every backup. Policy iteration instead alternates between evaluating one fixed policy and improving that policy.
+
+> **Definition (Policy evaluation).** Find the expected return from each state when the agent follows a specified policy, not necessarily an optimal one.
+
+For a fixed deterministic policy, the Bellman equation contains **no maximum over actions**:
+
+$$
+V^\pi(s)=\sum_{s'\in S}T(s,\pi(s),s')\left[R(s,\pi(s),s')+\gamma V^\pi(s')\right].
+$$
+
+The action is fixed by $\pi(s)$, but its possible outcomes are still averaged. Evaluation can solve these simultaneous equations directly or repeatedly update values for the fixed policy.
+
+> **Definition (Policy improvement).** Choose an action with the greatest one-step expected return, using the evaluated policy's values for the continuation.
+
+$$
+\pi_{\text{new}}(s)\in\arg\max_{a\in A(s)}\sum_{s'\in S}T(s,a,s')\left[R(s,a,s')+\gamma V^\pi(s')\right].
+$$
+
+Start with a policy, evaluate it, improve it, and repeat. With exact evaluation in a finite discounted MDP, a policy that cannot be strictly improved is optimal. Keeping the current action when it ties for best prevents unnecessary switching between equally good policies. Approximate or partial evaluation can be useful, but an unchanged approximate policy alone is not the same certificate.
+
+### 13. Comparing the Algorithms
+
+| | Value iteration | Policy iteration |
+|---|---|---|
+| Main operation | maximize in every state-value backup | evaluate a fixed policy, then improve it |
+| Evaluation backup | considers every action | considers the policy's one action per state |
+| Dense sweep | $O(\vert S\vert^2\vert A\vert)$ | $O(\vert S\vert^2)$ for one evaluation sweep |
+| Extra work | repeat value sweeps | repeat evaluation sweeps or solve equations, then improve the policy |
+
+These are **per-sweep** costs, not total algorithm costs. Policy improvement still examines actions; with at most $d$ successors per state–action pair, an evaluation sweep costs $O(\vert S\vert d)$. Which method is faster depends on the model and how evaluation is performed. Doing only some evaluation updates before improvement is called **modified policy iteration**.
+
 ## Quick Reference
 
 | Term | Meaning |
@@ -288,3 +323,6 @@ A **policy can become optimal before its numerical values converge**: the best a
 | Dense sweep cost | $O(\vert S\vert^2\vert A\vert)$ |
 | Sparse sweep cost | $O(\vert S\vert\vert A\vert d)$ for at most $d$ successors per state–action pair |
 | Convergence | unique optimal values for finite discounted MDPs with bounded rewards; possibly several optimal policies |
+| Policy evaluation | calculate values for a fixed policy; average successor outcomes without maximizing |
+| Policy improvement | choose actions by one-step look-ahead using the current policy's values |
+| Policy iteration | alternate evaluation and improvement until no strict improvement remains |
