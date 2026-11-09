@@ -2,9 +2,9 @@
 
 **Course:** CAI 4002 — Introduction to Artificial Intelligence (USF Fall 2026)
 
-**Sections:** 23.1 Learning from Rewards (pp. 840–842) · 23.2 Passive Reinforcement Learning (pp. 842–848) · 23.3 Active Reinforcement Learning, introduction, §23.3.1 and §23.3.3 (pp. 848–850, 852–854), selections.
+**Sections:** 23.1 Learning from Rewards (pp. 840–842) · 23.2 Passive Reinforcement Learning (pp. 842–848) · 23.3 Active Reinforcement Learning, introduction, §23.3.1 and §23.3.3 (pp. 848–850, 852–854) · 23.4 Generalization in Reinforcement Learning, introduction and §§23.4.1–23.4.2 (pp. 854–857), selections.
 
-**Class notes:** *Day 10 — MDP & Value Iteration*, slides 59–82. See [Chapter 16](chapter-16-making-complex-decisions.md) for MDPs, Bellman equations, and planning.
+**Class notes:** *Day 10 — MDP & Value Iteration*, slides 59–82 · *Day 11 — Reinforcement Learning*. See [Chapter 16](chapter-16-making-complex-decisions.md) for MDPs, Bellman equations, and planning, including the Day 11 review.
 
 ## Day 10 — Learning from Experience
 
@@ -91,6 +91,83 @@ An **epsilon-greedy** behavior policy chooses a random available action with pro
 | $\gamma$ | weight given to future rewards | the exploration probability |
 | $\alpha$ | how strongly a new target changes an estimate | the discount factor |
 
+## Day 11 — Exploration and Approximate Q-Learning
+
+### 7. Optimistic Exploration
+
+A purely greedy agent always chooses a currently best estimated action. It can settle on a suboptimal policy because it never discovers that an untried action is better. This does not contradict Q-learning's convergence theorem: the theorem requires sufficient exploration of state–action pairs.
+
+> **Definition (Exploration function).** A function combines a current value estimate with a measure of how often a choice has been tried, making uncertain choices appear more attractive.
+
+The lecture illustrates an optimistic bonus with a value estimate $u$ and a visit count $n$:
+
+$$
+f(u,n)=\begin{cases}
+u+K/n & \text{if } 0<n<N_e,\\
+u & \text{if } n\ge N_e.
+\end{cases}
+$$
+
+Here $K>0$ controls the bonus and $N_e$ is the exploration threshold. The expression is undefined at $n=0$: unvisited choices must be handled separately, for example by giving them an optimistic initial score. The count can be associated with the particular state–action choice being scored. As the count grows, the bonus shrinks; at the threshold this particular bonus is removed.
+
+The lecture also shows a modified backup that applies optimism to successor choices, allowing a bonus to propagate backward toward actions leading to unexplored areas. This is **not** the ordinary Q-learning target in Section 5. Alternatively, the textbook's exploratory Q-learning agent uses an exploration function to select behavior while retaining the ordinary Q-learning update. A finite bonus threshold alone does not guarantee the infinite exploration required by standard tabular Q-learning convergence.
+
+### 8. Regret
+
+> **Definition (Regret).** The difference between a specified optimal benchmark's expected cumulative reward and the learning agent's expected cumulative reward over the same time horizon.
+
+Regret accounts for rewards lost **while learning**, not just the quality of the final policy. Two methods may eventually learn good policies but incur different regret because one spends more time on poor choices. The precise benchmark depends on the problem; in an MDP, actions also affect the states reached. Eventual convergence does not by itself imply low finite-time regret.
+
+### 9. Features and Generalization
+
+Tabular Q-learning stores a separate estimate for every state–action pair. Large state spaces can make both storage and visiting every pair impractical.
+
+> **Definition (Feature).** A numerical property of a state or state–action pair used to describe it for learning.
+
+For a game, features might describe the distance to food, distance to a ghost, or whether an action moves toward food. A feature can be binary or numeric; it need not be a raw input variable. Shared features let experience from one situation affect predictions for other situations.
+
+In a **linear Q-function**, weights are shared across state–action pairs:
+
+$$
+\widehat{Q}_w(s,a)=\sum_{i=1}^{n}w_i f_i(s,a).
+$$
+
+The function is linear **in its weights**; the features themselves can be nonlinear functions, such as inverse distance. A constant feature can provide a bias term. Good features enable generalization, but two genuinely different situations can share misleading features, and the chosen representation might not express the correct values.
+
+### 10. Approximate Q-Learning Update
+
+Instead of changing a single table entry, approximate Q-learning updates the shared feature weights. For a sampled transition $(s,a,r,s')$, use the current approximation to form the target and error:
+
+$$
+\begin{aligned}
+y &= r+\gamma\max_{a'\in A(s')}\widehat{Q}_w(s',a'),\\
+\delta &= y-\widehat{Q}_w(s,a),\\
+w_i &\leftarrow w_i+\alpha\delta f_i(s,a).
+\end{aligned}
+$$
+
+For a terminal successor, the future term is zero. A positive error increases the weights of positive-valued active features; a negative error decreases them. A zero feature causes no change to its corresponding weight on that update. Since the weights are shared, changing them can also change predictions for other state–action pairs.
+
+The target itself uses current estimates, so it changes as learning proceeds. This is a **semi-gradient** update: it treats the current target as fixed while adjusting the prediction. Unlike standard tabular Q-learning, approximate Q-learning does not generally inherit the same convergence guarantee; approximation and bootstrapping can be unstable.
+
+### 11. Connection to Least Squares
+
+For a fixed target $y$ and prediction $\widehat{y}$, the residual is the target minus the prediction. One common single-example loss is half the squared residual:
+
+$$
+L(w)=\frac{1}{2}(y-\widehat{y})^2,
+\qquad \widehat{y}=\sum_{i=1}^{n}w_i f_i.
+$$
+
+The gradient is the vector of partial derivatives and points toward the greatest local increase in loss. Gradient descent moves the weights in the opposite direction. With a linear prediction and fixed target, the update is:
+
+$$
+w_i\leftarrow w_i-\alpha\frac{\partial L}{\partial w_i}=
+w_i+\alpha(y-\widehat{y})f_i.
+$$
+
+Approximate Q-learning has this same form when its sampled TD target is held fixed for the update. Unlike ordinary supervised regression with a known fixed label, its target includes an estimate of the future and can change after later updates.
+
 ## Quick Reference
 
 | Term | Meaning |
@@ -105,3 +182,9 @@ An **epsilon-greedy** behavior policy chooses a random available action with pro
 | Q-learning | model-free, off-policy action-value learning using a greedy successor target |
 | Epsilon-greedy | sometimes act randomly; otherwise choose a current best action |
 | $\epsilon$, $\gamma$, $\alpha$ | exploration probability, discount factor, learning rate, respectively |
+| Exploration function | adds optimism for insufficiently tried choices |
+| Regret | cumulative reward gap relative to a specified optimal benchmark |
+| Feature | numerical property describing a state or state–action pair |
+| Linear Q approximation | weighted sum of shared state–action features |
+| Approximate Q update | adjust weights using TD error and feature values |
+| Gradient descent | move parameters against the loss gradient |

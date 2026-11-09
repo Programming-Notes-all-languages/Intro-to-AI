@@ -31,7 +31,7 @@ Textbook: *Artificial Intelligence: A Modern Approach* (4th ed.), Russell & Norv
 | 20 | Knowledge in learning | — |
 | 21 | Learning probabilistic models: EM algorithm | — |
 | 22 | Deep learning: CNNs, RNNs, backpropagation | — |
-| 23 | Reinforcement learning: model-based learning, TD, Q-learning, exploration | [Chapter 23](chapters/chapter-23-reinforcement-learning.md) (§§23.1–23.3 selections · Day 10) |
+| 23 | Reinforcement learning: model-based learning, TD, Q-learning, exploration, approximation | [Chapter 23](chapters/chapter-23-reinforcement-learning.md) (§§23.1–23.4 selections · Days 10–11) |
 | 24–25 | Natural language processing & transformers | — |
 | 26 | Robotics | — |
 | 27 | Computer vision | — |
