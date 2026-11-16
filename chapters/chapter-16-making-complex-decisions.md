@@ -199,6 +199,38 @@ $$
 
 **Max returns a value; argmax identifies an action.** Choose any maximizing action when there is a tie. With a value table alone, policy extraction requires a one-step backup using $T$ and $R$; a Q-table already scores the actions directly.
 
+<details>
+<summary>Example — One-step action values with uncertain outcomes</summary>
+
+*Original practice modeled on the Day 9 MDP material.*
+
+An agent is deciding between two actions. The discount factor is $\gamma=0.5$.
+
+- **Action A:** Gives an immediate reward of 4 and always moves to a state with value 6.
+- **Action B:** Gives an immediate reward of 2. It has a 50% chance of moving to a state with value 12 and a 50% chance of moving to a state with value 4.
+
+The state values represent all future rewards **after** the immediate reward. Which action has the higher expected value?
+
+- A. Action A
+- B. Action B
+- C. Both have the same value
+- D. There isn't enough information
+
+<details>
+<summary>Solution</summary>
+
+**A. Action A** has the higher expected value. Average the possible next-state values for each action, multiply that average by the discount factor, and add the immediate reward.
+
+| Action | Expected next-state value | Immediate reward + discounted next-state value |
+|---|---|---|
+| A | 6 | 4 + 0.5(6) = **7** |
+| B | 0.5(12) + 0.5(4) = 8 | 2 + 0.5(8) = **6** |
+
+Each action makes **one move to a next state**. Action B's two possible next states are alternative outcomes of that same move, not successive moves. Each next-state value already summarizes future rewards from that state onward, so it is discounted once for the one-step look-ahead. The immediate reward is not discounted.
+
+</details>
+</details>
+
 ## Section 16.2.1 — Value Iteration
 
 ### 8. Time-Limited Values
