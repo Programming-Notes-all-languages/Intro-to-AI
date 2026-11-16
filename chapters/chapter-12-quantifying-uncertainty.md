@@ -263,6 +263,32 @@ A likelihood is not a posterior, and likelihoods across hypothesis values need n
 
 This is the distinction between the **causal direction**, evidence given cause, and the **diagnostic direction**, cause given evidence. Conditional probability alone does not establish a causal relationship. If the prior changes, the diagnostic probability must be reconsidered even if the likelihood model stays fixed.
 
+<details>
+<summary>Example — Reverse a conditional probability with Bayes’ rule</summary>
+
+*Original practice modeled on the Day 8–9 Bayes’ rule lectures.*
+
+In a weather model, the probability of rain is 0.40. If it rains, the probability of heavy traffic is 0.70. The overall probability of heavy traffic is 0.50. What is the probability of rain given heavy traffic?
+
+<details>
+<summary>Solution</summary>
+
+Let $R$ mean rain and $H$ mean heavy traffic. The conditional-probability formula in Section 6 divides the probability of **both** events by the probability of the evidence, $H$. This time the joint probability is not given directly. Use the product rule in Section 8 to find it from the rain probability and the heavy-traffic probability among rainy days.
+
+| Quantity | Calculation | Result |
+|---|---|---:|
+| Rain and heavy traffic | 0.40 × 0.70 | 0.28 |
+| Rain given heavy traffic | 0.28 / 0.50 | **0.56** |
+
+This is Bayes’ rule above: the numerator is the joint probability, not an extra event. The answer is **0.56**, or 56%.
+
+**What does “if it rains” mean?** Out of 100 hypothetical days matching this model, 40 are rainy. Heavy traffic occurs on 70% of those rainy days, so 28 days have both rain and heavy traffic. Heavy traffic occurs on 50 days overall; 28 of those 50 are rainy.
+
+**Why not multiply 0.40 by 0.50?** The 0.50 is the heavy-traffic probability across all days, while 0.70 is the heavy-traffic probability among rainy days. These differ, so the events are not independent. Multiplying the two overall probabilities to obtain their joint probability would require independence. Use the conditional 0.70 to find the portion of rainy days that also have heavy traffic.
+
+</details>
+</details>
+
 ## 10. Combining Evidence Requires the Right Independence Claim
 
 > **Definition (Independence).** Learning one variable's value leaves the other's distribution unchanged; the joint factors into the two marginals.
