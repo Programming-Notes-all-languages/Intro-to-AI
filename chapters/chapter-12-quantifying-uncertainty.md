@@ -267,6 +267,38 @@ This is the distinction between the **causal direction**, evidence given cause, 
 
 > **Definition (Independence).** Learning one variable's value leaves the other's distribution unchanged; the joint factors into the two marginals.
 
+<details>
+<summary>Example — Are rain and heavy traffic independent?</summary>
+
+*Original practice using a joint table modeled on the Day 8–9 probability lectures.*
+
+| Weather | Traffic | Probability |
+|---|---|---:|
+| Rain | Heavy | 0.30 |
+| Rain | Light | 0.20 |
+| No rain | Heavy | 0.10 |
+| No rain | Light | 0.40 |
+
+Are rain and heavy traffic independent? Explain how to tell.
+
+<details>
+<summary>Solution</summary>
+
+Events are independent if learning that one occurred does not change the probability of the other. Since heavy traffic has nonzero probability, compare rain overall with rain given heavy traffic:
+
+| Quantity | Calculation | Result |
+|---|---|---:|
+| Rain overall | 0.30 + 0.20 | 0.50 |
+| Heavy traffic overall | 0.30 + 0.10 | 0.40 |
+| Rain given heavy traffic | 0.30 / 0.40 | 0.75 |
+
+The conditional probability, 0.75, differs from the overall probability, 0.50. Therefore, **rain and heavy traffic are not independent** in this model. The difference does not by itself establish that either event causes the other.
+
+For events $A$ and $B$ with $P(B) > 0$, compare $P(A \mid B)$ with $P(A)$: equality means the events are independent; a difference means they are dependent.
+
+</details>
+</details>
+
 > **Definition (Conditional independence).** Once specified background information is known, learning one variable adds no information about the other.
 
 These are different claims. In the textbook's dental model, toothache and a probe catching are related through cavity, but are modeled as independent **given whether a cavity is present**.
