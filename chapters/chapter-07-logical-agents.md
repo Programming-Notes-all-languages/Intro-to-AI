@@ -447,6 +447,33 @@ A model of this combined formula is precisely a **counterexample**: the KB holds
 
 Resolution is **refutation-complete**: an unsatisfiable propositional clause set has a resolution derivation of the empty clause. Adding the negated query turns that guarantee into a complete entailment test. It does not mean resolution alone directly generates every consequence from the original KB without a refutation setup.
 
+<details>
+<summary>Example — Prove a conclusion by resolution refutation</summary>
+
+*Original practice modeled on the Day 8 lecture's slide 46 resolution example.*
+
+The knowledge base contains $A \Rightarrow (B \lor C)$, $A$, and $\neg C$. Use resolution refutation to determine whether it entails $B$.
+
+<details>
+<summary>Solution</summary>
+
+**1. Negate the query.** We are testing $B$, so add $\neg B$ as a temporary assumption. This is not a fact from the original KB: it asks whether the KB could be true while $B$ is false.
+
+**2. Convert to clauses.** Negate only the antecedent when eliminating the implication: $A \Rightarrow (B \lor C)$ becomes $\neg A \lor B \lor C$. The clauses are $\neg A \lor B \lor C$, $A$, $\neg C$, and the added $\neg B$.
+
+**3. Resolve complementary literals.**
+
+| Step | Clauses used | Opposite pair removed | New clause |
+|---|---|---|---|
+| 1 | $\neg A \lor B \lor C$ and $A$ | $\neg A$ and $A$ | $B \lor C$ |
+| 2 | $B \lor C$ and $\neg C$ | $C$ and $\neg C$ | $B$ |
+| 3 | $B$ and $\neg B$ | $B$ and $\neg B$ | $\square$ (empty clause) |
+
+**4. Interpret the contradiction.** The empty clause means the original KB together with the temporary assumption $\neg B$ is unsatisfiable. Thus the original KB entails $B$: its premises cannot all be true while $B$ is false.
+
+</details>
+</details>
+
 An inconsistent classical KB has no models and entails every formula vacuously. Therefore, a successful proof from an inconsistent KB is not evidence that the premises describe a sensible world.
 
 ### 20. Method Comparison and Formal Guarantees
