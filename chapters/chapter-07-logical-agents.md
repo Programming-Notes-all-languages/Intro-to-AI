@@ -423,6 +423,24 @@ The result is an AND of clauses, each clause is an OR of literals, and every neg
 </details>
 </details>
 
+<details>
+<summary>Example — An implication with a conjunctive conclusion</summary>
+
+*Original practice modeled on the Day 8 CNF-conversion slides.*
+
+Convert $P \Rightarrow (Q \land R)$ to conjunctive normal form.
+
+<details>
+<summary>Solution</summary>
+
+1. **Eliminate the implication:** $P \Rightarrow (Q \land R)$ becomes $\neg P \lor (Q \land R)$.
+2. **Distribute OR over AND:** pair $\neg P$ with each conjunct, giving the clause $\neg P \lor Q$ AND the clause $\neg P \lor R$.
+
+The result is CNF: the two clauses are joined by AND, and each clause is an OR of literals.
+
+</details>
+</details>
+
 ### 19. Entailment as Unsatisfiability
 
 > **Definition (Satisfiable / unsatisfiable).** A formula is satisfiable if at least one model makes it true; it is unsatisfiable if none does. A valid formula, or tautology, is true in every model.
